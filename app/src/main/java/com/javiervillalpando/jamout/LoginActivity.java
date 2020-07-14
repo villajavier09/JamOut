@@ -28,6 +28,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if(ParseUser.getCurrentUser() != null){
+            goToMainActivty();
+        }
+
         usernameField = findViewById(R.id.usernameField);
         passwordField = findViewById(R.id.passwordField);
         loginButton = findViewById(R.id.loginButton);
@@ -72,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void done(ParseUser user, ParseException e) {
                 if(e!= null){
+                    Toast.makeText(LoginActivity.this,"Incorrect username or password",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 goToMainActivty();
@@ -83,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
     private void goToMainActivty() {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
+        finish();
 
     }
 }
