@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mainfeedTab"
+        android:enabled="true"
+        android:icon="@drawable/mainfeed_icon"
+        android:title="Main Feed"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/searchTab"
+        android:enabled="true"
+        android:icon="@drawable/search_icon"
+        android:title="Search"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/shareTab"
+        android:enabled="true"
+        android:icon="@drawable/share_icon"
+        android:title="Share Song"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/profileTab"
+        android:enabled="true"
+        android:icon="@drawable/profile_icon"
+        android:title="Profile"
+        app:showAsAction="ifRoom" />
+</menu>
