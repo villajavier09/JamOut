@@ -8,16 +8,16 @@
         android:title="Main Feed"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/searchTab"
-        android:enabled="true"
-        android:icon="@drawable/search_icon"
-        android:title="Search"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/shareTab"
         android:enabled="true"
         android:icon="@drawable/share_icon"
         android:title="Share Song"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/searchTab"
+        android:enabled="true"
+        android:icon="@drawable/search_icon"
+        android:title="Search"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profileTab"
