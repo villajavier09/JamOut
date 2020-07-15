@@ -20,6 +20,7 @@
             android:layout_alignParentBottom="true"
             app:itemIconSize="40dp"
             app:menu="@menu/menu_bottom_navigation"
+            android:background="@color/colorAccent"
             app:itemBackground="@color/colorAccent"/>
 
 
