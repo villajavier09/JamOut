@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ public class ProfileFragment extends Fragment {
 
     public static final String TAG = "ProfileFragment";
     private Button logoutButton;
+    private Spinner dropdown;
 
     public ProfileFragment(){
         //Empty constructor for fragment
@@ -29,7 +32,10 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         logoutButton = view.findViewById(R.id.logoutButton);
-
+        dropdown = view.findViewById(R.id.dropdownmenu);
+        String[] dropdownOptions = new String[]{"Songs","Albums","Artists"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,dropdownOptions);
+        dropdown.setAdapter(adapter);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
