@@ -24,42 +24,52 @@
             android:layout_marginTop="16dp"
             tools:srcCompat="@tools:sample/avatars" />
 
+        <Button
+            android:id="@+id/takePictureButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profilePicture"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="13dp"
+            android:text="Take Profile Picture" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/profilePicture">
 
             <Button
-                android:id="@+id/editProfileButton"
+                android:id="@+id/saveChangesButton"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="125dp"
-                android:text="Edit Profile" />
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/following"
+                android:text="Save Changes" />
 
             <Button
                 android:id="@+id/logoutButton"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@id/editProfileButton"
+                android:layout_below="@id/saveChangesButton"
                 android:layout_marginTop="5dp"
                 android:text="Logout" />
 
 
-            <TextView
+            <EditText
                 android:id="@+id/username"
-                android:layout_alignStart="@+id/editProfileButton"
+                android:layout_alignStart="@+id/saveChangesButton"
                 android:layout_width="wrap_content"
                 android:textSize="24dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="38dp"
-                android:text="User1" />
+                android:hint="Username:"/>
 
             <TextView
                 android:id="@+id/followers"
-                android:layout_alignStart="@+id/editProfileButton"
+                android:layout_alignStart="@+id/saveChangesButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -68,13 +78,15 @@
 
             <TextView
                 android:id="@+id/following"
-                android:layout_alignStart="@+id/editProfileButton"
+                android:layout_alignStart="@+id/saveChangesButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/followers"
                 android:text="Following:" />
         </RelativeLayout>
+
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -88,8 +100,11 @@
             android:layout_marginBottom="8dp"></Spinner>
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <Button
+        android:id="@+id/AddFavorites"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:text="Add Favorites" />
+
+
 </LinearLayout>
