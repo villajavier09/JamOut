@@ -1,4 +1,4 @@
-package com.javiervillalpando.jamout;
+package com.javiervillalpando.jamout.mainactivities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,8 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.javiervillalpando.jamout.R;
 
 public class MainFeedFragment extends Fragment {
+    RecyclerView mainFeed;
     public MainFeedFragment(){
         //Empty constructor for fragment
     }
@@ -18,5 +22,11 @@ public class MainFeedFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main_feed,container,false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mainFeed = view.findViewById(R.id.mainFeed);
     }
 }

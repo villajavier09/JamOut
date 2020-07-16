@@ -5,13 +5,14 @@
     android:orientation="vertical">
 
     <SearchView
+        android:id="@+id/searchSong"
         android:layout_width="wrap_content"
-        android:queryHint="Search For Music or Users:"
         android:layout_height="wrap_content"
-        android:iconifiedByDefault="false"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search For Music or Users:" />
 
     <TextView
         android:layout_width="wrap_content"

@@ -1,4 +1,4 @@
-package com.javiervillalpando.jamout.profile;
+package com.javiervillalpando.jamout.mainactivities.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +12,9 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
-import com.javiervillalpando.jamout.LoginActivity;
+import com.javiervillalpando.jamout.mainactivities.LoginActivity;
 import com.javiervillalpando.jamout.R;
 import com.parse.ParseUser;
 
@@ -51,7 +52,7 @@ public class ProfileFragment extends Fragment {
         editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToEditProfileActivity();
+                goToEditProfileFragment();
             }
         });
     }
@@ -61,9 +62,9 @@ public class ProfileFragment extends Fragment {
         startActivity(i);
         getActivity().finish();
     }
-    public void goToEditProfileActivity(){
-        Intent i = new Intent(getActivity(),EditProfileActivity.class);
-        startActivity(i);
-        getActivity().finish();
+    public void goToEditProfileFragment(){
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        EditProfileFragment editProfileFragment = new EditProfileFragment();
+        fragmentManager.beginTransaction().add(R.id.frameContainer,editProfileFragment).commit();
     }
 }

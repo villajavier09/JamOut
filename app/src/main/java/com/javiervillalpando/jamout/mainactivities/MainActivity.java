@@ -1,9 +1,10 @@
-package com.javiervillalpando.jamout;
+package com.javiervillalpando.jamout.mainactivities;
 
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.javiervillalpando.jamout.profile.ProfileFragment;
+import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.mainactivities.profile.ProfileFragment;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,5 +52,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         bottomNavigationView.setSelectedItemId(R.id.mainfeedTab);
+
     }
 }

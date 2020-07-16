@@ -1,4 +1,4 @@
-package com.javiervillalpando.jamout;
+package com.javiervillalpando.jamout.mainactivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,11 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.javiervillalpando.jamout.R;
 import com.parse.LogInCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
