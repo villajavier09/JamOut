@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,13 +23,14 @@ public class LoginActivity extends AppCompatActivity {
     public EditText passwordField;
     public Button loginButton;
     public Button signupButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         if(ParseUser.getCurrentUser() != null){
-            goToMainActivty();
+            goToMainActivity();
         }
 
         usernameField = findViewById(R.id.usernameField);
@@ -78,13 +80,24 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this,"Incorrect username or password",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                goToMainActivty();
+                Log.d(TAG, "done: "+String.valueOf(user.getString("spotifyToken").equals("noToken")));
+                if(user.getString("spotifyToken").equals("noToken")){
+                    goToSpotifyActivity();
+                }
+                else {
+                    goToMainActivity();
+                }
                 Toast.makeText(LoginActivity.this,"Successfully Logged in",Toast.LENGTH_SHORT).show();
             }
         });
     }
+    private void goToMainActivity() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+        finish();
 
-    private void goToMainActivty() {
+    }
+    private void goToSpotifyActivity() {
         Intent i = new Intent(this, SpotifyClientActivity.class);
         startActivity(i);
         finish();

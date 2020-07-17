@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.javiervillalpando.jamout.R;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -59,6 +62,7 @@ public class SpotifyClientActivity extends AppCompatActivity {
                     editor = getSharedPreferences("SPOTIFY",0).edit();
                     editor.putString("token", response.getAccessToken());
                     Log.d("STARTING", "GOT AUTH TOKEN");
+                    updateUserField(response.getAccessToken());
                     editor.apply();
                     goToMainActivity();
                     break;
@@ -70,6 +74,20 @@ public class SpotifyClientActivity extends AppCompatActivity {
 
         }
     }
+
+    private void updateUserField(String accessToken) {
+        ParseUser user = ParseUser.getCurrentUser();
+        user.put("spotifyToken",accessToken);
+        user.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+            if(e!=null){
+                Log.e("SpotifyClientActivity", "Could not save tokent",e );
+            }
+            }
+        });
+    }
+
     private void goToMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
