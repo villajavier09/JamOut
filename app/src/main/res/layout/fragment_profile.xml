@@ -72,6 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:clickable="true"
                 android:layout_below="@id/editUsername"
                 android:text="Followers: 122" />
 
@@ -81,6 +82,7 @@
                 android:layout_alignStart="@+id/editProfileButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:layout_below="@id/followers"
                 android:text="Following: 357" />
         </RelativeLayout>

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,8 @@ public class ProfileFragment extends Fragment {
     public static final String TAG = "ProfileFragment";
     private Button logoutButton;
     private Button editProfileButton;
+    private TextView followers;
+    private TextView following;
     private Spinner dropdown;
 
     public ProfileFragment(){
@@ -38,10 +41,11 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         logoutButton = view.findViewById(R.id.logoutButton);
         editProfileButton = view.findViewById(R.id.editProfileButton);
+        followers = view.findViewById(R.id.followers);
+        following = view.findViewById(R.id.following);
         dropdown = view.findViewById(R.id.dropdownmenu);
-        String[] dropdownOptions = new String[]{"Songs","Albums","Artists"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,dropdownOptions);
-        dropdown.setAdapter(adapter);
+
+        setDropDown();
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,6 +60,23 @@ public class ProfileFragment extends Fragment {
                 goToEditProfileFragment();
             }
         });
+        followers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToFollowersFragment();
+            }
+        });
+        following.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToFollowingFragment();
+            }
+        });
+    }
+    public void setDropDown(){
+        String[] dropdownOptions = new String[]{"Songs","Albums","Artists"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,dropdownOptions);
+        dropdown.setAdapter(adapter);
     }
 
     public void goToLoginActivity(){
@@ -63,9 +84,24 @@ public class ProfileFragment extends Fragment {
         startActivity(i);
         getActivity().finish();
     }
+
     public void goToEditProfileFragment(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         EditProfileFragment editProfileFragment = new EditProfileFragment();
-        fragmentManager.beginTransaction().add(R.id.frameContainer,editProfileFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.frameContainer,editProfileFragment).commit();
+    }
+
+    public void goToFollowersFragment(){
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FollowersFragment followersFragment = new FollowersFragment();
+        fragmentManager.popBackStack();
+        fragmentManager.beginTransaction().replace(R.id.frameContainer,followersFragment).commit();
+    }
+
+    public void goToFollowingFragment(){
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.popBackStack();
+        FollowingFragment followingFragment = new FollowingFragment();
+        fragmentManager.beginTransaction().replace(R.id.frameContainer,followingFragment).commit();
     }
 }
