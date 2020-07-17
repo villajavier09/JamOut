@@ -60,7 +60,7 @@ public class SpotifyClientActivity extends AppCompatActivity {
                     editor.putString("token", response.getAccessToken());
                     Log.d("STARTING", "GOT AUTH TOKEN");
                     editor.apply();
-                    ///waitForUserInfo();
+                    goToMainActivity();
                     break;
                 case ERROR:
                     break;
@@ -70,4 +70,11 @@ public class SpotifyClientActivity extends AppCompatActivity {
 
         }
     }
+    private void goToMainActivity() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+        finish();
+
+    }
+
 }
