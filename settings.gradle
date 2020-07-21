@@ -1,2 +1,3 @@
+include ':spotify-web-api-android-0.4.1'
 include ':app'
 rootProject.name = "JamOut"

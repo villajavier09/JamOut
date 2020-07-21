@@ -15,12 +15,13 @@
         android:queryHint="Search For Music or Users:" />
 
     <TextView
+        android:id="@+id/recommendedUsersTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:textSize="16dp"
         android:layout_marginStart="16dp"
-        android:text="Recommended Users:"></TextView>
+        android:layout_marginTop="24dp"
+        android:text="Recommended Users:"
+        android:textSize="16dp"></TextView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recommendedUsersList"

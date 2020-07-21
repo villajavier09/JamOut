@@ -21,6 +21,7 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 public class SpotifyClientActivity extends AppCompatActivity {
 
+    private static String ACCESS_TOKEN;
     private SharedPreferences.Editor editor;
     private SharedPreferences msharedPreferences;
     private RequestQueue queue;
@@ -61,6 +62,7 @@ public class SpotifyClientActivity extends AppCompatActivity {
                 case TOKEN:
                     editor = getSharedPreferences("SPOTIFY",0).edit();
                     editor.putString("token", response.getAccessToken());
+                    ACCESS_TOKEN = response.getAccessToken();
                     Log.d("STARTING", "GOT AUTH TOKEN");
                     updateUserField(response.getAccessToken());
                     editor.apply();
@@ -95,4 +97,7 @@ public class SpotifyClientActivity extends AppCompatActivity {
 
     }
 
+    public static String getACCESS_TOKEN() {
+        return ACCESS_TOKEN;
+    }
 }
