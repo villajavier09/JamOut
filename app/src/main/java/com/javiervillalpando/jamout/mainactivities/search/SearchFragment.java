@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,11 +19,15 @@ import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
 import com.javiervillalpando.jamout.mainactivities.share.ShareSongDialogFragment;
+import com.javiervillalpando.jamout.models.ParseSong;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
@@ -55,15 +60,22 @@ public class SearchFragment extends Fragment {
         recommendedUsersList = view.findViewById(R.id.recommendedUsersList);
         trackList = new ArrayList<Track>();
 
-        SearchSongAdapter.OnLocationClickListener onLocationClickListener = new SearchSongAdapter.OnLocationClickListener() {
+        SearchSongAdapter.OnShareClickListener onShareClickListener = new SearchSongAdapter.OnShareClickListener() {
             private int position;
 
             @Override
-            public void OnLocationClicked(int position) {
+            public void OnShareClicked(int position) {
                 showShareResultsDialogFragment(position);
             }
         };
-        adapter = new SearchSongAdapter(getActivity(),trackList,onLocationClickListener);
+        SearchSongAdapter.OnFavoriteClickListener onFavoriteClickListener = new SearchSongAdapter.OnFavoriteClickListener() {
+            private  int position;
+            @Override
+            public void OnFavoriteClicked(int position) {
+                favoriteSong(position);
+            }
+        };
+        adapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(adapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
@@ -96,6 +108,18 @@ public class SearchFragment extends Fragment {
             }
         });
     }
+
+    private void favoriteSong(int position) {
+        final ParseSong song = new ParseSong();
+        song.setSongTitle(trackList.get(position).name);
+        song.setArtist(artistFormat(trackList.get(position).artists));
+        song.setImageUrl(trackList.get(position).album.images.get(0).url);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        currentUser.add("favoriteSongs",song);
+        currentUser.saveInBackground();
+        Toast.makeText(getActivity(),"Button clicked",Toast.LENGTH_SHORT).show();
+    }
+
     private void showShareResultsDialogFragment(int position) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         ShareSongDialogFragment shareResultsDialogFragment = new ShareSongDialogFragment();
@@ -110,5 +134,13 @@ public class SearchFragment extends Fragment {
         args.putString("coverUrl",trackList.get(position).album.images.get(0).url);
         shareResultsDialogFragment.setArguments(args);
         shareResultsDialogFragment.show(fm,"fragment_share_results_dialog");
+    }
+    private String artistFormat(List<ArtistSimple> artists){
+        List<String> names = new ArrayList<>();
+        for (ArtistSimple i : artists) {
+            names.add(i.name);
+        }
+        Joiner joiner = Joiner.on(", ");
+        return joiner.join(names);
     }
 }

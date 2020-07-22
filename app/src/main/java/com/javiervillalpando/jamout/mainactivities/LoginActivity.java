@@ -80,12 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this,"Incorrect username or password",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(user.getString("spotifyToken").equals("noToken")){
-                    goToSpotifyActivity();
-                }
-                else {
-                    goToMainActivity();
-                }
+                goToSpotifyActivity();
                 Toast.makeText(LoginActivity.this,"Successfully Logged in",Toast.LENGTH_SHORT).show();
             }
         });

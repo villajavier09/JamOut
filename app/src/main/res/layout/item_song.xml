@@ -41,7 +41,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/favoriteButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/artistTitle"
@@ -56,9 +56,9 @@
         android:id="@+id/shareSongButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button"
-        android:layout_alignStart="@+id/button"
-        android:layout_alignEnd="@+id/button"
+        android:layout_below="@+id/favoriteButton"
+        android:layout_alignStart="@+id/favoriteButton"
+        android:layout_alignEnd="@+id/favoriteButton"
         android:layout_marginStart="0dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="0dp"

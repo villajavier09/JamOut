@@ -25,17 +25,22 @@ import kaaes.spotify.webapi.android.models.Track;
 public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.ViewHolder> {
     Context context;
 
-    public  interface OnLocationClickListener{
-        void OnLocationClicked(int position);
+    public  interface OnShareClickListener {
+        void OnShareClicked(int position);
+    }
+    public interface OnFavoriteClickListener{
+        void OnFavoriteClicked(int position);
     }
 
     ArrayList<Track> trackList = new ArrayList<Track>();
-    OnLocationClickListener locationClickListener;
+    OnShareClickListener onShareClickListener;
+    OnFavoriteClickListener onFavoriteClickListener;
 
-    public SearchSongAdapter(Context context, ArrayList<Track> tracks, OnLocationClickListener locationClickListener){
+    public SearchSongAdapter(Context context, ArrayList<Track> tracks, OnShareClickListener onShareClickListener, OnFavoriteClickListener onFavoriteClickListener){
         trackList = tracks;
         this.context = context;
-        this.locationClickListener = locationClickListener;
+        this.onShareClickListener = onShareClickListener;
+        this.onFavoriteClickListener = onFavoriteClickListener;
     }
     @NonNull
     @Override
@@ -55,6 +60,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
         TextView artistTitle = holder.artistTitle;
         ImageView albumCover = holder.albumCover;
         Button shareSongButton = holder.shareSongButton;
+        Button favoriteButton = holder.favoriteButton;
         List<String> names = new ArrayList<>();
         for (ArtistSimple i : track.artists) {
             names.add(i.name);
@@ -67,7 +73,13 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
         shareSongButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                locationClickListener.OnLocationClicked(holder.getAdapterPosition());
+                onShareClickListener.OnShareClicked(holder.getAdapterPosition());
+            }
+        });
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFavoriteClickListener.OnFavoriteClicked(holder.getAdapterPosition());
             }
         });
 
@@ -79,6 +91,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
         public TextView artistTitle;
         public ImageView albumCover;
         public Button shareSongButton;
+        public Button favoriteButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,6 +99,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
             artistTitle = itemView.findViewById(R.id.artistTitle);
             albumCover = itemView.findViewById(R.id.albumCover);
             shareSongButton = itemView.findViewById(R.id.shareSongButton);
+            favoriteButton = itemView.findViewById(R.id.favoriteButton);
         }
 
     }
