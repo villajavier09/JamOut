@@ -23,7 +23,7 @@ android:layout_height="400dp">
 
 
 <ImageView
-    android:id="@+id/albumCover"
+    android:id="@+id/postImage"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentStart="true"
