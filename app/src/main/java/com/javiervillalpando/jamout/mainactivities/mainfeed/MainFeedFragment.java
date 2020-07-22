@@ -1,40 +1,32 @@
-package com.javiervillalpando.jamout.mainactivities;
+package com.javiervillalpando.jamout.mainactivities.mainfeed;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.javiervillalpando.jamout.R;
 
-public class ShareSongFragment extends Fragment {
-
-    private SearchView searchSong;
-    private Button shareButton;
-    private EditText postDescription;
-
-    public ShareSongFragment(){
+public class MainFeedFragment extends Fragment {
+    RecyclerView mainFeed;
+    public MainFeedFragment(){
         //Empty constructor for fragment
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_share_song,container,false);
+        return inflater.inflate(R.layout.fragment_main_feed,container,false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        searchSong = view.findViewById(R.id.searchSong);
-        shareButton = view.findViewById(R.id.shareButton);
-        postDescription = view.findViewById(R.id.postDescription);
+        mainFeed = view.findViewById(R.id.mainFeed);
     }
 }

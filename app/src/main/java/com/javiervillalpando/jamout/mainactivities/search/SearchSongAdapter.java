@@ -25,10 +25,17 @@ import kaaes.spotify.webapi.android.models.Track;
 public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.ViewHolder> {
     Context context;
 
+    public  interface OnLocationClickListener{
+        void OnLocationClicked(int position);
+    }
+
     ArrayList<Track> trackList = new ArrayList<Track>();
-    public SearchSongAdapter(Context context, ArrayList<Track> tracks){
+    OnLocationClickListener locationClickListener;
+
+    public SearchSongAdapter(Context context, ArrayList<Track> tracks, OnLocationClickListener locationClickListener){
         trackList = tracks;
         this.context = context;
+        this.locationClickListener = locationClickListener;
     }
     @NonNull
     @Override
@@ -41,12 +48,13 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Track track = trackList.get(position);
         TextView songTitle = holder.songTitle;
         songTitle.setText("Song: "+track.name);
         TextView artistTitle = holder.artistTitle;
         ImageView albumCover = holder.albumCover;
+        Button shareSongButton = holder.shareSongButton;
         List<String> names = new ArrayList<>();
         for (ArtistSimple i : track.artists) {
             names.add(i.name);
@@ -56,7 +64,12 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
         if(track.album.images != null){
             Glide.with(context).load(track.album.images.get(0).url).into(albumCover);
         }
-
+        shareSongButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                locationClickListener.OnLocationClicked(holder.getAdapterPosition());
+            }
+        });
 
     }
 
@@ -65,12 +78,16 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
         public TextView songTitle;
         public TextView artistTitle;
         public ImageView albumCover;
+        public Button shareSongButton;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             songTitle = itemView.findViewById(R.id.songTitle);
             artistTitle = itemView.findViewById(R.id.artistTitle);
             albumCover = itemView.findViewById(R.id.albumCover);
+            shareSongButton = itemView.findViewById(R.id.shareSongButton);
         }
+
     }
     @Override
     public int getItemCount() {

@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
-    android:layout_height="wrap_content"
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/postUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Username">
 
-    </TextView>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="200dp">
+
 
         <ImageView
             android:id="@+id/albumCover"
@@ -23,7 +22,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="4dp"
             android:layout_marginTop="20dp"
-            />
+            tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/songTitle"
@@ -49,12 +48,22 @@
             android:text="TextView" />
     </RelativeLayout>
 
-    <TextView
+    <EditText
         android:id="@+id/postDescription"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Caption">
+        android:layout_gravity="center"
+        android:hint="Add Comment to Post:"></EditText>
 
-    </TextView>
+    <Button
+        android:id="@+id/shareSongButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimaryDark"
+        android:text="Share Post"
+        android:textColor="@color/colorPrimary" />
+
 
 </LinearLayout>

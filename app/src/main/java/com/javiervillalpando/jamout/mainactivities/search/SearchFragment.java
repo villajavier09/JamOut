@@ -1,30 +1,29 @@
 package com.javiervillalpando.jamout.mainactivities.search;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.telecom.Call;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabLayout;
+import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
+import com.javiervillalpando.jamout.mainactivities.share.ShareSongDialogFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import kaaes.spotify.webapi.android.models.ArtistSimple;
 import kaaes.spotify.webapi.android.models.Track;
-import kaaes.spotify.webapi.android.models.Tracks;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -55,7 +54,16 @@ public class SearchFragment extends Fragment {
         searchSong = view.findViewById(R.id.searchSong);
         recommendedUsersList = view.findViewById(R.id.recommendedUsersList);
         trackList = new ArrayList<Track>();
-        adapter = new SearchSongAdapter(getActivity(),trackList);
+
+        SearchSongAdapter.OnLocationClickListener onLocationClickListener = new SearchSongAdapter.OnLocationClickListener() {
+            private int position;
+
+            @Override
+            public void OnLocationClicked(int position) {
+                showShareResultsDialogFragment(position);
+            }
+        };
+        adapter = new SearchSongAdapter(getActivity(),trackList,onLocationClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(adapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
@@ -72,6 +80,7 @@ public class SearchFragment extends Fragment {
                             }
                             recommendedUsersTitle.setText("Search Results:");
                             adapter.notifyDataSetChanged();
+                            searchSong.clearFocus();
                         }
 
                         @Override
@@ -87,5 +96,19 @@ public class SearchFragment extends Fragment {
             }
         });
     }
-
+    private void showShareResultsDialogFragment(int position) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        ShareSongDialogFragment shareResultsDialogFragment = new ShareSongDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("name", trackList.get(position).name);
+        List<String> names = new ArrayList<>();
+        for (ArtistSimple i : trackList.get(position).artists) {
+            names.add(i.name);
+        }
+        Joiner joiner = Joiner.on(", ");
+        args.putString("artistname", joiner.join(names));
+        args.putString("coverUrl",trackList.get(position).album.images.get(0).url);
+        shareResultsDialogFragment.setArguments(args);
+        shareResultsDialogFragment.show(fm,"fragment_share_results_dialog");
+    }
 }

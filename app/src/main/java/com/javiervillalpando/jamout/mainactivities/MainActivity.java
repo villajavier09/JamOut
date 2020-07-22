@@ -4,8 +4,10 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.mainactivities.mainfeed.MainFeedFragment;
 import com.javiervillalpando.jamout.mainactivities.profile.ProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.search.SearchFragment;
+import com.javiervillalpando.jamout.mainactivities.share.ShareSongFragment;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

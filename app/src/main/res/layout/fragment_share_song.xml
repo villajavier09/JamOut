@@ -7,48 +7,48 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <SearchView
-        android:id="@+id/searchSong"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:iconifiedByDefault="false"
-        android:queryHint="Search For Music to Share" />
+<SearchView
+android:id="@+id/searchSong"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentTop="true"
+android:layout_gravity="center"
+android:layout_marginTop="16dp"
+android:iconifiedByDefault="false"
+android:queryHint="Search For Music to Share" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="400dp">
-
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="125dp"
-            tools:srcCompat="@tools:sample/avatars" />
-    </RelativeLayout>
-
-    <EditText
-        android:id="@+id/postDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:hint="Add Comment to Post:"></EditText>
-
-    <Button
-        android:id="@+id/shareButton"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
-        android:textColor="@color/colorPrimary"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:text="Share Post" />
+<RelativeLayout
+android:layout_width="match_parent"
+android:layout_height="400dp">
 
 
-</LinearLayout>
+<ImageView
+    android:id="@+id/albumCover"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_marginStart="28dp"
+    android:layout_marginTop="125dp"
+    tools:srcCompat="@tools:sample/avatars" />
+</RelativeLayout>
+
+<EditText
+android:id="@+id/postDescription"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_gravity="center"
+android:hint="Add Comment to Post:"></EditText>
+
+<Button
+android:id="@+id/shareSongButton"
+android:layout_width="150dp"
+android:layout_height="wrap_content"
+android:background="@color/colorPrimaryDark"
+android:textColor="@color/colorPrimary"
+android:layout_gravity="center"
+android:layout_marginTop="8dp"
+android:text="Share Post" />
+
+
+    </LinearLayout>
