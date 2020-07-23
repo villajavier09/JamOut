@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -75,6 +76,8 @@ public class ShareSongDialogFragment extends DialogFragment {
             public void onClick(View view) {
                 String description = postDescription.getText().toString();
                 shareSong(description,name,artistname,coverUrl);
+                dismiss();
+                Toast.makeText(getActivity(), "Song Shared", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -106,7 +109,6 @@ public class ShareSongDialogFragment extends DialogFragment {
         song.setSongTitle(title);
         song.setArtist(artist);
         song.setImageUrl(url);
-
         song.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

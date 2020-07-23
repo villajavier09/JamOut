@@ -1,6 +1,7 @@
 package com.javiervillalpando.jamout.mainactivities.search;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,9 @@ import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
 import com.javiervillalpando.jamout.mainactivities.share.ShareSongDialogFragment;
 import com.javiervillalpando.jamout.models.ParseSong;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -110,27 +114,48 @@ public class SearchFragment extends Fragment {
     }
 
     private void favoriteSong(int position) {
-        final ParseSong song = new ParseSong();
-        song.setSongTitle(trackList.get(position).name);
-        song.setArtist(artistFormat(trackList.get(position).artists));
-        song.setImageUrl(trackList.get(position).album.images.get(0).url);
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        currentUser.add("favoriteSongs",song);
-        currentUser.saveInBackground();
-        Toast.makeText(getActivity(),"Button clicked",Toast.LENGTH_SHORT).show();
+        if(checkIfInFavorites(position) == true){
+            Toast.makeText(getActivity(),"Song already in favorites",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            final ParseSong song = new ParseSong();
+            song.setSongTitle(trackList.get(position).name);
+            song.setSongId(trackList.get(position).id);
+            song.setArtist(artistFormat(trackList.get(position).artists));
+            song.setImageUrl(trackList.get(position).album.images.get(0).url);
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            currentUser.add("favoriteSongs", song);
+            currentUser.saveInBackground();
+            Toast.makeText(getActivity(), "Song Added to Favorites!", Toast.LENGTH_SHORT).show();
+        }
     }
+
+    private boolean checkIfInFavorites(int position) {
+        ArrayList<ParseSong> currentFavorites = (ArrayList<ParseSong>) ParseUser.getCurrentUser().get("favoriteSongs");
+        ArrayList<String> currentFavoriteIds = new ArrayList<String>();
+        String songId = trackList.get(position).id;
+        for(int i = 0; i < currentFavorites.size();i++){
+            try {
+                ParseSong currentFavorite = (ParseSong) currentFavorites.get(i).fetch();
+                if(currentFavorite.getSongId() != null && currentFavorite.getSongId().equals(songId)){
+                    return true;
+                }
+            }catch(ParseException e){
+                e.printStackTrace();
+            }
+
+        }
+        Log.d("SearchFragment", currentFavoriteIds.toString());
+        return false;
+    }
+
 
     private void showShareResultsDialogFragment(int position) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         ShareSongDialogFragment shareResultsDialogFragment = new ShareSongDialogFragment();
         Bundle args = new Bundle();
         args.putString("name", trackList.get(position).name);
-        List<String> names = new ArrayList<>();
-        for (ArtistSimple i : trackList.get(position).artists) {
-            names.add(i.name);
-        }
-        Joiner joiner = Joiner.on(", ");
-        args.putString("artistname", joiner.join(names));
+        args.putString("artistname", artistFormat(trackList.get(position).artists));
         args.putString("coverUrl",trackList.get(position).album.images.get(0).url);
         shareResultsDialogFragment.setArguments(args);
         shareResultsDialogFragment.show(fm,"fragment_share_results_dialog");
