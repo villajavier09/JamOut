@@ -31,6 +31,7 @@ import java.util.List;
 public class ProfileFragment extends Fragment {
 
     public static final String TAG = "ProfileFragment";
+    private TextView username;
     private Button logoutButton;
     private Button editProfileButton;
     private TextView followers;
@@ -51,6 +52,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         logoutButton = view.findViewById(R.id.logoutButton);
+        username = view.findViewById(R.id.editUsername);
         editProfileButton = view.findViewById(R.id.editProfileButton);
         followers = view.findViewById(R.id.followers);
         following = view.findViewById(R.id.following);
@@ -58,6 +60,7 @@ public class ProfileFragment extends Fragment {
         favoritesList = view.findViewById(R.id.favoritesList);
         setDropDown();
 
+        username.setText(ParseUser.getCurrentUser().getUsername());
         favoriteSongs = new ArrayList<>();
         adapter = new FavoriteSongAdapter(getActivity(),favoriteSongs);
         favoritesList.setAdapter(adapter);
@@ -94,6 +97,9 @@ public class ProfileFragment extends Fragment {
 
     private void queryFavoriteSongs() {
         ArrayList<ParseSong> currentFavorites = (ArrayList<ParseSong>) ParseUser.getCurrentUser().get("favoriteSongs");
+        if(currentFavorites == null){
+            return;
+        }
         for(int i = 0; i < currentFavorites.size();i++){
             try {
                 ParseSong currentFavorite = (ParseSong) currentFavorites.get(i).fetch();
@@ -106,7 +112,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setDropDown(){
-        String[] dropdownOptions = new String[]{"Songs","Albums","Artists"};
+        String[] dropdownOptions = new String[]{"Favorite Songs","Favorite Albums","Favorite Artists"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,dropdownOptions);
         dropdown.setAdapter(adapter);
     }

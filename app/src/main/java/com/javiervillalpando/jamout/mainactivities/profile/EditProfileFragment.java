@@ -14,11 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.javiervillalpando.jamout.R;
+import com.parse.ParseUser;
 
 public class EditProfileFragment extends Fragment {
     private Button saveChangesButton;
     private Button logoutButton;
     private EditText editUsername;
+    private EditText editPassword;
 
     public EditProfileFragment(){
         //Empty constructor for fragment
@@ -34,6 +36,7 @@ public class EditProfileFragment extends Fragment {
         saveChangesButton = view.findViewById(R.id.saveChangesButton);
         logoutButton = view.findViewById(R.id.logoutButton);
         editUsername = view.findViewById(R.id.editUsername);
+        editPassword = view.findViewById(R.id.editPassword);
 
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +48,13 @@ public class EditProfileFragment extends Fragment {
 
     public void goToProfile(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if(editUsername.getText().toString() != ""){
+            currentUser.setUsername(editUsername.getText().toString());
+        }
+        if (editPassword.getText().toString() != "") {
+            currentUser.setPassword(editPassword.getText().toString());
+        }
         ProfileFragment fragment = new ProfileFragment();
         fragmentManager.beginTransaction().add(R.id.frameContainer,fragment).commit();
 

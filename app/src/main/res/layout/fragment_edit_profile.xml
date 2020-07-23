@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
-                android:layout_below="@id/following"
+                android:layout_below="@id/editPassword"
                 android:text="Save Changes" />
 
             <Button
@@ -79,24 +79,18 @@
                 android:layout_marginTop="32dp"
                 android:hint="Username:"/>
 
-            <TextView
-                android:id="@+id/followers"
-                android:layout_alignStart="@+id/saveChangesButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginTop="12dp"
-                android:layout_below="@id/editUsername"
-                android:text="Followers:" />
 
-            <TextView
-                android:id="@+id/following"
-                android:layout_alignStart="@+id/saveChangesButton"
+            <EditText
+                android:id="@+id/editPassword"
                 android:layout_width="wrap_content"
-                android:textColor="@color/colorPrimary"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/followers"
-                android:text="Following:" />
+                android:textSize="24dp"
+                android:layout_below="@+id/editUsername"
+                android:layout_alignStart="@+id/editUsername"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:hint="New Password:"
+                android:textColorHint="@color/colorPrimary" />
         </RelativeLayout>
 
     </RelativeLayout>
