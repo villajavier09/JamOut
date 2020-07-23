@@ -132,6 +132,9 @@ public class SearchFragment extends Fragment {
 
     private boolean checkIfInFavorites(int position) {
         ArrayList<ParseSong> currentFavorites = (ArrayList<ParseSong>) ParseUser.getCurrentUser().get("favoriteSongs");
+        if(currentFavorites == null){
+            return false;
+        }
         ArrayList<String> currentFavoriteIds = new ArrayList<String>();
         String songId = trackList.get(position).id;
         for(int i = 0; i < currentFavorites.size();i++){
@@ -157,6 +160,7 @@ public class SearchFragment extends Fragment {
         args.putString("name", trackList.get(position).name);
         args.putString("artistname", artistFormat(trackList.get(position).artists));
         args.putString("coverUrl",trackList.get(position).album.images.get(0).url);
+        args.putString("songId",trackList.get(position).id);
         shareResultsDialogFragment.setArguments(args);
         shareResultsDialogFragment.show(fm,"fragment_share_results_dialog");
     }

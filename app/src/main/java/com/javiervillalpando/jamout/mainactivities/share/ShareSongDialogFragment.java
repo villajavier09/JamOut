@@ -60,6 +60,7 @@ public class ShareSongDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         final String name = getArguments().getString("name");
         final String artistname = getArguments().getString("artistname");
+        final String songId = getArguments().getString("songId");
         final String coverUrl = getArguments().getString("coverUrl");
         postDescription = view.findViewById(R.id.postDescription);
         songTitle = view.findViewById(R.id.songTitle);
@@ -75,7 +76,7 @@ public class ShareSongDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 String description = postDescription.getText().toString();
-                shareSong(description,name,artistname,coverUrl);
+                shareSong(description,name,artistname,coverUrl,songId);
                 dismiss();
                 Toast.makeText(getActivity(), "Song Shared", Toast.LENGTH_SHORT).show();
             }
@@ -83,9 +84,9 @@ public class ShareSongDialogFragment extends DialogFragment {
 
     }
 
-    private void shareSong(String description, String name, String artistname, String coverUrl) {
+    private void shareSong(String description, String name, String artistname, String coverUrl, String songId) {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseSong song = saveSong(name,artistname,coverUrl);
+        ParseSong song = saveSong(name,artistname,coverUrl,songId);
         savePost(description,currentUser,song);
 
     }
@@ -104,11 +105,12 @@ public class ShareSongDialogFragment extends DialogFragment {
             }
         });
     }
-    private ParseSong saveSong(String title, String artist, String url){
+    private ParseSong saveSong(String title, String artist, String url,String songId){
         final ParseSong song = new ParseSong();
         song.setSongTitle(title);
         song.setArtist(artist);
         song.setImageUrl(url);
+        song.setSongId(songId);
         song.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
