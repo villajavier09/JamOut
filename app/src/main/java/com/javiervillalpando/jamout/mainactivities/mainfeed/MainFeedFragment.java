@@ -1,7 +1,6 @@
 package com.javiervillalpando.jamout.mainactivities.mainfeed;
 
 import android.os.Bundle;
-import android.telephony.RadioAccessSpecifier;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.adapters.PostsAdapter;
 import com.javiervillalpando.jamout.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;

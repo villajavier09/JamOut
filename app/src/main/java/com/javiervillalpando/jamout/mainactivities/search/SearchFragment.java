@@ -18,20 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
 import com.javiervillalpando.jamout.mainactivities.share.ShareSongDialogFragment;
 import com.javiervillalpando.jamout.models.ParseSong;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
-import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;

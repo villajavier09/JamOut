@@ -1,4 +1,4 @@
-package com.javiervillalpando.jamout.mainactivities.search;
+package com.javiervillalpando.jamout.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

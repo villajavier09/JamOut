@@ -1,4 +1,4 @@
-package com.javiervillalpando.jamout.mainactivities.mainfeed;
+package com.javiervillalpando.jamout.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,8 +14,6 @@ import com.bumptech.glide.Glide;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.models.Post;
 import com.parse.ParseException;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
