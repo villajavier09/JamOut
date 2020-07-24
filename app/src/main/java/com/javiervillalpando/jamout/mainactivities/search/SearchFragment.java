@@ -97,7 +97,6 @@ public class SearchFragment extends Fragment {
 
                         @Override
                         public void failure(RetrofitError error) {
-
                         }
                     });
                     return  true;
@@ -108,7 +107,7 @@ public class SearchFragment extends Fragment {
             }
         });
     }
-
+    //Add songs to favorites
     private void favoriteSong(int position) {
         if(checkIfInFavorites(position) == true){
             Toast.makeText(getActivity(),"Song already in favorites",Toast.LENGTH_SHORT).show();
@@ -125,13 +124,12 @@ public class SearchFragment extends Fragment {
             Toast.makeText(getActivity(), "Song Added to Favorites!", Toast.LENGTH_SHORT).show();
         }
     }
-
+    //Makes sure song user wants to add to favorites isn't already in favorites
     private boolean checkIfInFavorites(int position) {
         ArrayList<ParseSong> currentFavorites = (ArrayList<ParseSong>) ParseUser.getCurrentUser().get("favoriteSongs");
         if(currentFavorites == null){
             return false;
         }
-        ArrayList<String> currentFavoriteIds = new ArrayList<String>();
         String songId = trackList.get(position).id;
         for(int i = 0; i < currentFavorites.size();i++){
             try {
@@ -144,10 +142,8 @@ public class SearchFragment extends Fragment {
             }
 
         }
-        Log.d("SearchFragment", currentFavoriteIds.toString());
         return false;
     }
-
 
     private void showShareResultsDialogFragment(int position) {
         FragmentManager fm = getActivity().getSupportFragmentManager();

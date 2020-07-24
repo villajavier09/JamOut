@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         final Fragment ShareSongFragment = new ShareSongFragment();
         final Fragment SearchFragment = new SearchFragment();
         final Fragment ProfileFragment = new ProfileFragment();
-
+        //Basic navigation bar to go between the main fragments of the app
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

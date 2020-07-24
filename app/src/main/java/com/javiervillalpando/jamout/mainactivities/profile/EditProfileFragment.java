@@ -80,12 +80,10 @@ public class EditProfileFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference for future access
         photoFile = getPhotoFileUri(photoFileName);
-
         // wrap File object into a content provider
         // required for API >= 24
         Uri fileProvider = FileProvider.getUriForFile(getActivity(), "com.codepath.fileprovider.javier", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-
         // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
         // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {

@@ -55,36 +55,8 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Track track = trackList.get(position);
-        TextView songTitle = holder.songTitle;
-        songTitle.setText("Song: "+track.name);
-        TextView artistTitle = holder.artistTitle;
-        ImageView albumCover = holder.albumCover;
-        Button shareSongButton = holder.shareSongButton;
-        Button favoriteButton = holder.favoriteButton;
-        List<String> names = new ArrayList<>();
-        for (ArtistSimple i : track.artists) {
-            names.add(i.name);
-        }
-        Joiner joiner = Joiner.on(", ");
-        artistTitle.setText("Artist: " +joiner.join(names));
-        if(track.album.images != null){
-            Glide.with(context).load(track.album.images.get(0).url).into(albumCover);
-        }
-        shareSongButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onShareClickListener.OnShareClicked(holder.getAdapterPosition());
-            }
-        });
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onFavoriteClickListener.OnFavoriteClicked(holder.getAdapterPosition());
-            }
-        });
-
+        holder.bind(track);
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView songTitle;
@@ -102,6 +74,30 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
             favoriteButton = itemView.findViewById(R.id.favoriteButton);
         }
 
+        public void bind(Track track) {
+            songTitle.setText("Song: "+track.name);
+            List<String> names = new ArrayList<>();
+            for (ArtistSimple i : track.artists) {
+                names.add(i.name);
+            }
+            Joiner joiner = Joiner.on(", ");
+            artistTitle.setText("Artist: " +joiner.join(names));
+            if(track.album.images != null){
+                Glide.with(context).load(track.album.images.get(0).url).into(albumCover);
+            }
+            shareSongButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onShareClickListener.OnShareClicked(getAdapterPosition());
+                }
+            });
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onFavoriteClickListener.OnFavoriteClicked(getAdapterPosition());
+                }
+            });
+        }
     }
     @Override
     public int getItemCount() {

@@ -19,7 +19,6 @@ public class SpotifyRequests extends AppCompatActivity {
 
     public static void searchSongs(String searchQuery, final SearchSongAdapter adapter, Callback<TracksPager> callback){
         SpotifyApi api = new SpotifyApi();
-
         String ACCESS_TOKEN = SpotifyClientActivity.getACCESS_TOKEN();
         api.setAccessToken(ACCESS_TOKEN);
         SpotifyService service = api.getService();

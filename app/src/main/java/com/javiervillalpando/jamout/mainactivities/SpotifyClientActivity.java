@@ -19,6 +19,7 @@ import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
+//Used to authenticate the user with Spotify so that the Spotify network calls will work
 public class SpotifyClientActivity extends AppCompatActivity {
 
     private static String ACCESS_TOKEN;
@@ -37,9 +38,7 @@ public class SpotifyClientActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_spotify_client);
-
         authenticateSpotify();
-
         msharedPreferences = this.getSharedPreferences("SPOTIFY",0);
         queue = Volley.newRequestQueue(this);
     }
@@ -71,9 +70,7 @@ public class SpotifyClientActivity extends AppCompatActivity {
                 case ERROR:
                     break;
                 default:
-
             }
-
         }
     }
 
@@ -94,9 +91,7 @@ public class SpotifyClientActivity extends AppCompatActivity {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
-
     }
-
     public static String getACCESS_TOKEN() {
         return ACCESS_TOKEN;
     }

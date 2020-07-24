@@ -55,24 +55,9 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        logoutButton = view.findViewById(R.id.logoutButton);
-        username = view.findViewById(R.id.editUsername);
-        editProfileButton = view.findViewById(R.id.editProfileButton);
-        followers = view.findViewById(R.id.followers);
-        following = view.findViewById(R.id.following);
-        dropdown = view.findViewById(R.id.dropdownmenu);
-        favoritesList = view.findViewById(R.id.favoritesList);
-        profilePicture = view.findViewById(R.id.profilePicture);
+        setViews(view);
         setDropDown();
-        ParseFile image = (ParseFile) ParseUser.getCurrentUser().get("profilePicture");
-        String imageUrl = "";
-        if(image != null){
-            imageUrl = image.getUrl();
-        }
-
-        if(imageUrl != ""){
-            Glide.with(getActivity()).load(imageUrl).into(profilePicture);
-        }
+        loadProfilePicture();
 
         username.setText(ParseUser.getCurrentUser().getUsername());
         favoriteSongs = new ArrayList<>();
@@ -107,6 +92,28 @@ public class ProfileFragment extends Fragment {
                 goToFollowingFragment();
             }
         });
+    }
+
+    private void loadProfilePicture() {
+        ParseFile image = (ParseFile) ParseUser.getCurrentUser().get("profilePicture");
+        String imageUrl = "";
+        if(image != null){
+            imageUrl = image.getUrl();
+        }
+        if(imageUrl != ""){
+            Glide.with(getActivity()).load(imageUrl).circleCrop().into(profilePicture);
+        }
+    }
+
+    private void setViews(View view) {
+        logoutButton = view.findViewById(R.id.logoutButton);
+        username = view.findViewById(R.id.editUsername);
+        editProfileButton = view.findViewById(R.id.editProfileButton);
+        followers = view.findViewById(R.id.followers);
+        following = view.findViewById(R.id.following);
+        dropdown = view.findViewById(R.id.dropdownmenu);
+        favoritesList = view.findViewById(R.id.favoritesList);
+        profilePicture = view.findViewById(R.id.profilePicture);
     }
 
     private void queryFavoriteSongs() {

@@ -52,7 +52,6 @@ public class ShareSongDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_share_results_dialog,container);
-
     }
 
     @Override

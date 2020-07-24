@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.models.Post;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import java.util.List;
 
@@ -55,6 +57,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         private TextView postSongTitle;
         private TextView postArtistName;
         private ImageView postImage;
+        private ImageView postUserProfileImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +66,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             postSongTitle = itemView.findViewById(R.id.postSongTitle);
             postArtistName = itemView.findViewById(R.id.postArtistName);
             postImage = itemView.findViewById(R.id.postImage);
+            postUserProfileImage = itemView.findViewById(R.id.postUserProfileImage);
         }
 
         public void bind(Post post) throws ParseException {
@@ -71,6 +75,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             postSongTitle.setText(post.getSong().getSongTitle());
             postArtistName.setText(post.getSong().getArtist());
             Glide.with(context).load(post.getSong().getImageUrl()).into(postImage);
+            ParseFile image = (ParseFile) post.getUser().get("profilePicture");
+            String imageUrl = "";
+            if(image != null){
+                imageUrl = image.getUrl();
+            }
+            if(imageUrl != ""){
+                Glide.with(context).load(imageUrl).circleCrop().into(postUserProfileImage);
+            }
         }
     }
 }
