@@ -10,11 +10,11 @@
 
     <RelativeLayout
         android:id="@+id/profileInformation"
-        android:background="@color/colorAccent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:background="@color/colorAccent">
 
         <ImageView
             android:id="@+id/profilePicture"
@@ -24,73 +24,74 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
+            android:visibility="invisible"
             tools:srcCompat="@tools:sample/avatars" />
 
         <Button
             android:id="@+id/takePictureButton"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@color/colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/profilePicture"
+            android:layout_below="@+id/profilePicture"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Take Profile Picture" />
+            android:background="@color/colorPrimaryDark"
+            android:text="Take Profile Picture"
+            android:textColor="@color/colorPrimary" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp"
             android:layout_toRightOf="@id/profilePicture">
 
             <Button
                 android:id="@+id/saveChangesButton"
-                android:background="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimary"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/editPassword"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
-                android:layout_below="@id/editPassword"
-                android:text="Save Changes" />
+                android:background="@color/colorPrimaryDark"
+                android:text="Save Changes"
+                android:textColor="@color/colorPrimary" />
 
             <Button
                 android:id="@+id/logoutButton"
-                android:background="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimary"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@id/saveChangesButton"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="8dp"
-                android:text="Logout" />
+                android:background="@color/colorPrimaryDark"
+                android:text="Logout"
+                android:textColor="@color/colorPrimary" />
 
 
             <EditText
                 android:id="@+id/editUsername"
-                android:layout_alignStart="@+id/saveChangesButton"
-                android:textColorHint="@color/colorPrimary"
                 android:layout_width="wrap_content"
-                android:textSize="24dp"
-                android:textColor="@color/colorPrimary"
                 android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/saveChangesButton"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="32dp"
-                android:hint="Username:"/>
+                android:hint="Username:"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="24dp" />
 
 
             <EditText
                 android:id="@+id/editPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="24dp"
                 android:layout_below="@+id/editUsername"
                 android:layout_alignStart="@+id/editUsername"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
                 android:hint="New Password:"
-                android:textColorHint="@color/colorPrimary" />
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="24dp" />
         </RelativeLayout>
 
     </RelativeLayout>

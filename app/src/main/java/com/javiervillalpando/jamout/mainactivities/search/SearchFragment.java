@@ -63,7 +63,6 @@ public class SearchFragment extends Fragment {
 
         SearchSongAdapter.OnShareClickListener onShareClickListener = new SearchSongAdapter.OnShareClickListener() {
             private int position;
-
             @Override
             public void OnShareClicked(int position) {
                 showShareResultsDialogFragment(position);

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -17,12 +18,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.javiervillalpando.jamout.adapters.FavoriteSongAdapter;
 import com.javiervillalpando.jamout.mainactivities.LoginActivity;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.models.ParseSong;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -36,6 +39,7 @@ public class ProfileFragment extends Fragment {
     private Button editProfileButton;
     private TextView followers;
     private TextView following;
+    private ImageView profilePicture;
     private Spinner dropdown;
     private RecyclerView favoritesList;
     protected FavoriteSongAdapter adapter;
@@ -58,7 +62,17 @@ public class ProfileFragment extends Fragment {
         following = view.findViewById(R.id.following);
         dropdown = view.findViewById(R.id.dropdownmenu);
         favoritesList = view.findViewById(R.id.favoritesList);
+        profilePicture = view.findViewById(R.id.profilePicture);
         setDropDown();
+        ParseFile image = (ParseFile) ParseUser.getCurrentUser().get("profilePicture");
+        String imageUrl = "";
+        if(image != null){
+            imageUrl = image.getUrl();
+        }
+
+        if(imageUrl != ""){
+            Glide.with(getActivity()).load(imageUrl).into(profilePicture);
+        }
 
         username.setText(ParseUser.getCurrentUser().getUsername());
         favoriteSongs = new ArrayList<>();
@@ -125,21 +139,22 @@ public class ProfileFragment extends Fragment {
 
     public void goToEditProfileFragment(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        String profileFragmentName = getClass().getName();
         EditProfileFragment editProfileFragment = new EditProfileFragment();
-        fragmentManager.beginTransaction().replace(R.id.frameContainer,editProfileFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.frameContainer,editProfileFragment).addToBackStack(profileFragmentName).commit();
     }
 
     public void goToFollowersFragment(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        String profileFragmentName = getClass().getName();
         FollowersFragment followersFragment = new FollowersFragment();
-        fragmentManager.popBackStack();
-        fragmentManager.beginTransaction().replace(R.id.frameContainer,followersFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.frameContainer,followersFragment).addToBackStack(profileFragmentName).commit();
     }
 
     public void goToFollowingFragment(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.popBackStack();
+        String profileFragmentName = getClass().getName();
         FollowingFragment followingFragment = new FollowingFragment();
-        fragmentManager.beginTransaction().replace(R.id.frameContainer,followingFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.frameContainer,followingFragment).addToBackStack(profileFragmentName).commit();
     }
 }
