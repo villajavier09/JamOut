@@ -1,14 +1,30 @@
 package com.javiervillalpando.jamout.mainactivities.profile;
 
+import android.app.DownloadManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.adapters.FollowingAdapter;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,50 +33,60 @@ import com.javiervillalpando.jamout.R;
  */
 public class FollowingFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView followingList;
+    protected FollowingAdapter adapter;
+    protected List<ParseUser> following;
 
     public FollowingFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FollowingFragment.
-     */
     // TODO: Rename and change types and number of parameters
-    public static FollowingFragment newInstance(String param1, String param2) {
+    public static FollowingFragment newInstance() {
         FollowingFragment fragment = new FollowingFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_following, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        followingList = view.findViewById(R.id.followingList);
+
+        following = new ArrayList<ParseUser>();
+        adapter = new FollowingAdapter(getActivity(),following);
+        followingList.setAdapter(adapter);
+        followingList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        getFollowing();
+
+    }
+
+    private void getFollowing() {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        ParseQuery<ParseObject> query = currentUser.getRelation("following").getQuery();
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if(e == null){
+                    for(int i = 0; i < objects.size(); i++){
+                        following.add((ParseUser) objects.get(i));
+                        adapter.notifyDataSetChanged();
+                    }
+                    Log.d("FollowingFragment", "done: "+ following.toString());
+                }else{
+                    Log.d("following","Error"+e.getMessage());
+                }
+
+            }
+        });
+
     }
 }
