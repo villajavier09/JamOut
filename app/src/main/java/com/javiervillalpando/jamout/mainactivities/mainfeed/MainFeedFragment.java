@@ -17,7 +17,9 @@ import com.javiervillalpando.jamout.adapters.PostsAdapter;
 import com.javiervillalpando.jamout.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class MainFeedFragment extends Fragment {
     RecyclerView mainFeed;
     public static final String TAG = "Main Feed";
     protected PostsAdapter adapter;
+    protected List<String> followingUsers;
     protected List<Post> allPosts;
     public MainFeedFragment(){
         //Empty constructor for fragment
@@ -46,37 +49,55 @@ public class MainFeedFragment extends Fragment {
         adapter= new PostsAdapter(getContext(), allPosts);
         mainFeed.setAdapter(adapter);
         mainFeed.setLayoutManager(new LinearLayoutManager(getContext()));
-        queryPosts();
+        queryFollowing();
     }
 
-    private void queryPosts() {
-        // specify what type of data we want to query - Post.class
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
-        query.include(Post.KEY_USER);
-        // limit query to latest 20 items
-        query.setLimit(20);
-        // order posts by creation date (newest first)
-        query.addDescendingOrder(Post.KEY_TIME);
-        // start an asynchronous call for posts
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-                }
-
-                // save received posts to list and notify adapter of new data
-                allPosts.addAll(posts);
-                adapter.notifyDataSetChanged();
+private void queryFollowing(){
+    final List<ParseUser> followingUsers = new ArrayList<>();
+    ParseQuery<ParseObject> following = ParseUser.getCurrentUser().getRelation("following").getQuery();
+    following.include("User");
+    following.findInBackground(new FindCallback<ParseObject>() {
+        @Override
+        public void done(List<ParseObject> users, ParseException e) {
+            for(ParseObject user: users){
+                followingUsers.add((ParseUser) user);
             }
-        });
-    }
+            followingUsers.add(ParseUser.getCurrentUser());
+            queryPosts(followingUsers);
+        }
+    });
+
+}
+private void queryPosts(List<ParseUser> users){
+    ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+    // include data referred by user key
+    query.include(Post.KEY_USER);
+    query.whereContainedIn("user",users);
+    // limit query to latest 20 items
+    query.setLimit(20);
+    // order posts by creation date (newest first)
+    query.addDescendingOrder(Post.KEY_TIME);
+    // start an asynchronous call for posts
+    query.findInBackground(new FindCallback<Post>() {
+        @Override
+        public void done(List<Post> posts, ParseException e) {
+            // check for errors
+            if (e != null) {
+                Log.e(TAG, "Issue with getting posts", e);
+                return;
+            }
+
+            // for debugging purposes let's print every post description to logcat
+            for (Post post : posts) {
+                Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
+            }
+
+            // save received posts to list and notify adapter of new data
+            allPosts.addAll(posts);
+            adapter.notifyDataSetChanged();
+        }
+    });
+
+
+}
 }
