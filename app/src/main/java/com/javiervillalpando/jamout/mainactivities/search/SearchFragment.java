@@ -23,6 +23,8 @@ import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
 import com.javiervillalpando.jamout.adapters.SearchUsersAdapter;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
+import com.javiervillalpando.jamout.mainactivities.profile.EditProfileFragment;
+import com.javiervillalpando.jamout.mainactivities.profile.OtherUserProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.share.ShareSongDialogFragment;
 import com.javiervillalpando.jamout.models.ParseSong;
 import com.parse.FindCallback;
@@ -91,7 +93,19 @@ public class SearchFragment extends Fragment {
     }
 
     private void getUserResults(String s) {
-        searchUsersAdapter= new SearchUsersAdapter(getActivity(),userList);
+        SearchUsersAdapter.OnFollowClickListener onFollowClickListener = new SearchUsersAdapter.OnFollowClickListener() {
+            @Override
+            public void OnFollowClicked(int position) {
+                followUser(position);
+            }
+        };
+        SearchUsersAdapter.OnUserClickListener onUserClickListener = new SearchUsersAdapter.OnUserClickListener() {
+            @Override
+            public void OnUserClickListener(int position) {
+                goToUserDetailView(position);
+            }
+        };
+        searchUsersAdapter= new SearchUsersAdapter(getActivity(),userList,onFollowClickListener, onUserClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchUsersAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
@@ -105,6 +119,22 @@ public class SearchFragment extends Fragment {
                 searchUsersAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void goToUserDetailView(int position) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        OtherUserProfileFragment otherUserProfileFragment = new OtherUserProfileFragment();
+        ParseUser user = userList.get(position);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("UserItem",user);
+        otherUserProfileFragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.frameContainer,otherUserProfileFragment).addToBackStack(null).commit();
+    }
+
+    private void followUser(int position) {
+        ParseUser.getCurrentUser().getRelation("following").add(userList.get(position));
+        ParseUser.getCurrentUser().saveInBackground();
+        Toast.makeText(getActivity(),"Followed user", Toast.LENGTH_SHORT).show();
     }
 
     private void getSongResults(String s) {

@@ -37,12 +37,7 @@ public class MainFeedFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main_feed,container,false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_main_feed,container,false);
         mainFeed = view.findViewById(R.id.mainFeed);
 
         allPosts = new ArrayList<>();
@@ -50,6 +45,13 @@ public class MainFeedFragment extends Fragment {
         mainFeed.setAdapter(adapter);
         mainFeed.setLayoutManager(new LinearLayoutManager(getContext()));
         queryFollowing();
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
 private void queryFollowing(){

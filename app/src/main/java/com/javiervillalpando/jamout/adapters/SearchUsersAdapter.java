@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -23,10 +24,21 @@ import java.util.List;
 public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.ViewHolder> {
     private Context context;
     private List<ParseUser> userList;
+    private OnFollowClickListener onFollowClickListener;
+    private OnUserClickListener onUserClickListener;
 
-    public SearchUsersAdapter(Context context, List<ParseUser> userList){
+    public  interface OnFollowClickListener {
+        void OnFollowClicked(int position);
+    }
+    public interface  OnUserClickListener{
+        void OnUserClickListener(int position);
+    }
+
+    public SearchUsersAdapter(Context context, List<ParseUser> userList, OnFollowClickListener onFollowClickListener, OnUserClickListener onUserClickListener){
         this.context = context;
         this.userList = userList;
+        this.onFollowClickListener = onFollowClickListener;
+        this.onUserClickListener = onUserClickListener;
     }
     @NonNull
     @Override
@@ -49,12 +61,14 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
         private ImageView searchUserProfilePicture;
         private TextView searchUserName;
         private Button searchUserFollowButton;
+        private ConstraintLayout itemUserContainer;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             searchUserProfilePicture = itemView.findViewById(R.id.searchUserProfilePicture);
             searchUserName = itemView.findViewById(R.id.searchUserName);
             searchUserFollowButton = itemView.findViewById(R.id.searchUserFollowButton);
+            itemUserContainer = itemView.findViewById(R.id.itemUserContainer);
         }
 
         public void bind(ParseUser user) {
@@ -67,6 +81,18 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
             if(imageUrl != ""){
                 Glide.with(context).load(imageUrl).circleCrop().into(searchUserProfilePicture);
             }
+            searchUserFollowButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onFollowClickListener.OnFollowClicked(getAdapterPosition());
+                }
+            });
+            itemUserContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onUserClickListener.OnUserClickListener(getAdapterPosition());
+                }
+            });
         }
     }
 }
