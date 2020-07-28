@@ -16,7 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.javiervillalpando.jamout.R;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -25,6 +29,7 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
     private Context context;
     private List<ParseUser> userList;
     private OnFollowClickListener onFollowClickListener;
+    private  OnUnfollowClickListener onUnfollowClickListener;
     private OnUserClickListener onUserClickListener;
 
     public  interface OnFollowClickListener {
@@ -33,12 +38,16 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
     public interface  OnUserClickListener{
         void OnUserClickListener(int position);
     }
+    public interface  OnUnfollowClickListener{
+        void OnUnfollowClicked(int position);
+    }
 
-    public SearchUsersAdapter(Context context, List<ParseUser> userList, OnFollowClickListener onFollowClickListener, OnUserClickListener onUserClickListener){
+    public SearchUsersAdapter(Context context, List<ParseUser> userList, OnFollowClickListener onFollowClickListener, OnUnfollowClickListener onUnfollowClickListener, OnUserClickListener onUserClickListener){
         this.context = context;
         this.userList = userList;
         this.onFollowClickListener = onFollowClickListener;
         this.onUserClickListener = onUserClickListener;
+        this.onUnfollowClickListener = onUnfollowClickListener;
     }
     @NonNull
     @Override
@@ -73,6 +82,7 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
 
         public void bind(ParseUser user) {
             searchUserName.setText(user.getUsername());
+            setFollowerButtonText(user);
             ParseFile image = (ParseFile) user.get("profilePicture");
             String imageUrl = "";
             if(image != null){
@@ -81,12 +91,7 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
             if(imageUrl != ""){
                 Glide.with(context).load(imageUrl).circleCrop().into(searchUserProfilePicture);
             }
-            searchUserFollowButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onFollowClickListener.OnFollowClicked(getAdapterPosition());
-                }
-            });
+
             itemUserContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -94,5 +99,38 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
                 }
             });
         }
+
+        private void setFollowerButtonText(final ParseUser user) {
+            ParseQuery<ParseObject> following = ParseUser.getCurrentUser().getRelation("following").getQuery();
+            following.whereEqualTo("username",user.getUsername());
+            following.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
+                    if (e == null) {
+                        if(objects.size() == 0){
+                            searchUserFollowButton.setText("Follow");
+                            searchUserFollowButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    onFollowClickListener.OnFollowClicked(getAdapterPosition());
+                                    bind(user);
+                                }
+                            });
+                        }
+                        else{
+                            searchUserFollowButton.setText("Unfollow");
+                            searchUserFollowButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    onUnfollowClickListener.OnUnfollowClicked(getAdapterPosition());
+                                    bind(user);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
     }
+
 }

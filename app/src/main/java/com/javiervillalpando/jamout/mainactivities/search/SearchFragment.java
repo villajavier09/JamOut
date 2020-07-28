@@ -97,6 +97,14 @@ public class SearchFragment extends Fragment {
             @Override
             public void OnFollowClicked(int position) {
                 followUser(position);
+                searchUsersAdapter.notifyDataSetChanged();
+            }
+        };
+        SearchUsersAdapter.OnUnfollowClickListener onUnfollowClickListener = new SearchUsersAdapter.OnUnfollowClickListener() {
+            @Override
+            public void OnUnfollowClicked(int position) {
+                unfollowUser(position);
+                searchUsersAdapter.notifyDataSetChanged();
             }
         };
         SearchUsersAdapter.OnUserClickListener onUserClickListener = new SearchUsersAdapter.OnUserClickListener() {
@@ -105,7 +113,7 @@ public class SearchFragment extends Fragment {
                 goToUserDetailView(position);
             }
         };
-        searchUsersAdapter= new SearchUsersAdapter(getActivity(),userList,onFollowClickListener, onUserClickListener);
+        searchUsersAdapter= new SearchUsersAdapter(getActivity(),userList,onFollowClickListener,onUnfollowClickListener, onUserClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchUsersAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
@@ -129,6 +137,11 @@ public class SearchFragment extends Fragment {
         bundle.putParcelable("UserItem",user);
         otherUserProfileFragment.setArguments(bundle);
         fragmentManager.beginTransaction().replace(R.id.frameContainer,otherUserProfileFragment).addToBackStack(null).commit();
+    }
+    private void unfollowUser(int position) {
+        ParseUser.getCurrentUser().getRelation("following").remove(userList.get(position));
+        ParseUser.getCurrentUser().saveInBackground();
+        Toast.makeText(getActivity(),"Unfollowed user", Toast.LENGTH_SHORT).show();
     }
 
     private void followUser(int position) {
@@ -209,7 +222,6 @@ public class SearchFragment extends Fragment {
             }catch(ParseException e){
                 e.printStackTrace();
             }
-
         }
         return false;
     }
