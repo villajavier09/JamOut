@@ -49,12 +49,7 @@ public class ProfileFragment extends Fragment {
         //Empty constructor for fragment
     }
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile,container,false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_profile,container,false);
         setViews(view);
         setDropDown();
         loadProfilePicture();
@@ -92,6 +87,51 @@ public class ProfileFragment extends Fragment {
                 goToFollowingFragment();
             }
         });
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        /*setViews(view);
+        setDropDown();
+        loadProfilePicture();
+
+        username.setText(ParseUser.getCurrentUser().getUsername());
+        favoriteSongs = new ArrayList<>();
+        adapter = new FavoriteSongAdapter(getActivity(),favoriteSongs);
+        favoritesList.setAdapter(adapter);
+        favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        queryFavoriteSongs();
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseUser.logOut();
+                ParseUser currentUser = ParseUser.getCurrentUser();
+                goToLoginActivity();
+            }
+        });
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToEditProfileFragment();
+            }
+        });
+        followers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToFollowersFragment();
+            }
+        });
+        following.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToFollowingFragment();
+            }
+        });
+
+         */
     }
 
     private void loadProfilePicture() {

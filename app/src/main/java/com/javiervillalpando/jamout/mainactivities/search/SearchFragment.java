@@ -5,7 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,10 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
+import com.javiervillalpando.jamout.adapters.SearchUsersAdapter;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
 import com.javiervillalpando.jamout.mainactivities.share.ShareSongDialogFragment;
 import com.javiervillalpando.jamout.models.ParseSong;
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -38,9 +43,12 @@ import retrofit.client.Response;
 public class SearchFragment extends Fragment {
     private SearchView searchSong;
     RecyclerView recommendedUsersList;
-    private SearchSongAdapter adapter;
+    private SearchSongAdapter searchSongAdapter;
+    private SearchUsersAdapter searchUsersAdapter;
     private ArrayList<Track> trackList;
+    private ArrayList<ParseUser> userList;
     private TextView recommendedUsersTitle;
+    private Spinner searchDropDown;
 
 
     public SearchFragment(){
@@ -59,8 +67,47 @@ public class SearchFragment extends Fragment {
         recommendedUsersTitle = view.findViewById(R.id.recommendedUsersTitle);
         searchSong = view.findViewById(R.id.searchSong);
         recommendedUsersList = view.findViewById(R.id.recommendedUsersList);
+        searchDropDown = view.findViewById(R.id.searchDropDown);
         trackList = new ArrayList<Track>();
+        userList = new ArrayList<ParseUser>();
 
+        setSearchDropDown();
+        searchSong.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                if(searchDropDown.getSelectedItem().toString().equals("Songs")){
+                    getSongResults(s);
+                }
+                if(searchDropDown.getSelectedItem().toString().equals("Users")){
+                    getUserResults(s);
+                }
+                    return  true;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+    }
+
+    private void getUserResults(String s) {
+        searchUsersAdapter= new SearchUsersAdapter(getActivity(),userList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recommendedUsersList.setAdapter(searchUsersAdapter);
+        recommendedUsersList.setLayoutManager(linearLayoutManager);
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereContains("username",s);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> users, ParseException e) {
+                userList.clear();
+                userList.addAll(users);
+                searchUsersAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void getSongResults(String s) {
         SearchSongAdapter.OnShareClickListener onShareClickListener = new SearchSongAdapter.OnShareClickListener() {
             private int position;
             @Override
@@ -75,38 +122,30 @@ public class SearchFragment extends Fragment {
                 favoriteSong(position);
             }
         };
-        adapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recommendedUsersList.setAdapter(adapter);
-        recommendedUsersList.setLayoutManager(linearLayoutManager);
-        searchSong.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                    SpotifyRequests.searchSongs(s, adapter, new Callback<TracksPager>() {
-                        @Override
-                        public void success(TracksPager tracksPager, Response response) {
-                            trackList.clear();
-                            ArrayList<Track> tracks = (ArrayList<Track>) tracksPager.tracks.items;
-                            for(Track track: tracks){
-                                trackList.add(track);
-                            }
-                            recommendedUsersTitle.setText("Search Results:");
-                            adapter.notifyDataSetChanged();
-                            searchSong.clearFocus();
-                        }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                        }
-                    });
-                    return  true;
-            }
+        searchSongAdapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recommendedUsersList.setAdapter(searchSongAdapter);
+        recommendedUsersList.setLayoutManager(linearLayoutManager);
+        SpotifyRequests.searchSongs(s, searchSongAdapter, new Callback<TracksPager>() {
             @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
+            public void success(TracksPager tracksPager, Response response) {
+                trackList.clear();
+                ArrayList<Track> tracks = (ArrayList<Track>) tracksPager.tracks.items;
+                for(Track track: tracks){
+                    trackList.add(track);
+                }
+                recommendedUsersTitle.setText("Search Results:");
+                searchSongAdapter.notifyDataSetChanged();
+                searchSong.clearFocus();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
             }
         });
     }
+
     //Add songs to favorites
     private void favoriteSong(int position) {
         if(checkIfInFavorites(position) == true){
@@ -163,5 +202,10 @@ public class SearchFragment extends Fragment {
         }
         Joiner joiner = Joiner.on(", ");
         return joiner.join(names);
+    }
+    public void setSearchDropDown(){
+        String[] dropdownOptions = new String[]{"Songs","Albums","Artists","Users"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,dropdownOptions);
+        searchDropDown.setAdapter(adapter);
     }
 }
