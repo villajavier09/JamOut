@@ -3,12 +3,15 @@ package com.javiervillalpando.jamout.models;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
+import java.util.ArrayList;
+
 @ParseClassName("Song")
 public class ParseSong extends ParseObject {
     public static final String KEY_SONGID = "songId";
     public static final String KEY_TITLE= "songTitle";
     public static final String KEY_ARTIST = "artist";
     public static final String KEY_IMAGEURL = "imageUrl";
+    public static final String KEY_GENRE = "genre";
 
     public ParseSong() {
     }

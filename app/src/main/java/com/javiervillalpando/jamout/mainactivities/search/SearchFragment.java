@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.UserRecommendationAlgorithm;
 import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
 import com.javiervillalpando.jamout.adapters.SearchUsersAdapter;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
@@ -74,6 +75,7 @@ public class SearchFragment extends Fragment {
         userList = new ArrayList<ParseUser>();
 
         setSearchDropDown();
+        loadRecommendedUsers();
         searchSong.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -90,6 +92,35 @@ public class SearchFragment extends Fragment {
                 return false;
             }
         });
+    }
+
+    private void loadRecommendedUsers() {
+        userList = (ArrayList<ParseUser>)UserRecommendationAlgorithm.recommendUsers();
+        SearchUsersAdapter.OnFollowClickListener onFollowClickListener = new SearchUsersAdapter.OnFollowClickListener() {
+            @Override
+            public void OnFollowClicked(int position) {
+                followUser(position);
+                searchUsersAdapter.notifyDataSetChanged();
+            }
+        };
+        SearchUsersAdapter.OnUnfollowClickListener onUnfollowClickListener = new SearchUsersAdapter.OnUnfollowClickListener() {
+            @Override
+            public void OnUnfollowClicked(int position) {
+                unfollowUser(position);
+                searchUsersAdapter.notifyDataSetChanged();
+            }
+        };
+        SearchUsersAdapter.OnUserClickListener onUserClickListener = new SearchUsersAdapter.OnUserClickListener() {
+            @Override
+            public void OnUserClickListener(int position) {
+                goToUserDetailView(position);
+            }
+        };
+        searchUsersAdapter= new SearchUsersAdapter(getActivity(),userList,onFollowClickListener,onUnfollowClickListener, onUserClickListener);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recommendedUsersList.setAdapter(searchUsersAdapter);
+        recommendedUsersList.setLayoutManager(linearLayoutManager);
+
     }
 
     private void getUserResults(String s) {
@@ -141,12 +172,14 @@ public class SearchFragment extends Fragment {
     private void unfollowUser(int position) {
         ParseUser.getCurrentUser().getRelation("following").remove(userList.get(position));
         ParseUser.getCurrentUser().saveInBackground();
+        searchUsersAdapter.notifyDataSetChanged();
         Toast.makeText(getActivity(),"Unfollowed user", Toast.LENGTH_SHORT).show();
     }
 
     private void followUser(int position) {
         ParseUser.getCurrentUser().getRelation("following").add(userList.get(position));
         ParseUser.getCurrentUser().saveInBackground();
+        searchUsersAdapter.notifyDataSetChanged();
         Toast.makeText(getActivity(),"Followed user", Toast.LENGTH_SHORT).show();
     }
 
