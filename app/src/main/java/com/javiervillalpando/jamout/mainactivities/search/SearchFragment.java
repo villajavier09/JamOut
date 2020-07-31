@@ -3,6 +3,7 @@ package com.javiervillalpando.jamout.mainactivities.search;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.UserRecommendationAlgorithm;
+import com.javiervillalpando.jamout.adapters.FavoriteSongAdapter;
 import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
 import com.javiervillalpando.jamout.adapters.SearchUsersAdapter;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
@@ -28,6 +31,7 @@ import com.javiervillalpando.jamout.mainactivities.profile.EditProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.profile.OtherUserProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.share.ShareSongDialogFragment;
 import com.javiervillalpando.jamout.models.ParseSong;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -44,7 +48,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class SearchFragment extends Fragment {
-    private SearchView searchSong;
+    //private SearchView searchSong;
+    private MaterialSearchBar searchBar;
     RecyclerView recommendedUsersList;
     private SearchSongAdapter searchSongAdapter;
     private SearchUsersAdapter searchUsersAdapter;
@@ -68,15 +73,84 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recommendedUsersTitle = view.findViewById(R.id.recommendedUsersTitle);
-        searchSong = view.findViewById(R.id.searchSong);
+        //searchSong = view.findViewById(R.id.searchSong);
+        searchBar = view.findViewById(R.id.searchBar);
+        searchBar.inflateMenu(R.menu.menu_main);
+        searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+            @Override
+            public void onSearchStateChanged(boolean enabled) {
+
+            }
+
+            @Override
+            public void onSearchConfirmed(CharSequence text) {
+                getSongResults(text.toString());
+            }
+
+            @Override
+            public void onButtonClicked(int buttonCode) {
+
+            }
+        });
+        searchBar.getMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.songs){
+                    searchBar.setHint("Search for Songs");
+                    searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+                        @Override
+                        public void onSearchStateChanged(boolean enabled) {
+
+                        }
+
+                        @Override
+                        public void onSearchConfirmed(CharSequence text) {
+                            getSongResults(text.toString());
+                        }
+
+                        @Override
+                        public void onButtonClicked(int buttonCode) {
+
+                        }
+                    });
+                }
+                if(item.getItemId() == R.id.albums){
+                    searchBar.setHint("Search for Albums");
+
+                }
+                if(item.getItemId() == R.id.artists){
+                    searchBar.setHint("Search for Artists");
+                }
+                if(item.getItemId() == R.id.users){
+                    searchBar.setHint("Search for Users");
+                    searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+                        @Override
+                        public void onSearchStateChanged(boolean enabled) {
+
+                        }
+
+                        @Override
+                        public void onSearchConfirmed(CharSequence text) {
+                            getUserResults(text.toString());
+                        }
+
+                        @Override
+                        public void onButtonClicked(int buttonCode) {
+
+                        }
+                    });
+                }
+                return true;
+            }
+        });
         recommendedUsersList = view.findViewById(R.id.recommendedUsersList);
-        searchDropDown = view.findViewById(R.id.searchDropDown);
+        //searchDropDown = view.findViewById(R.id.searchDropDown);
         trackList = new ArrayList<Track>();
         userList = new ArrayList<ParseUser>();
 
-        setSearchDropDown();
-        loadRecommendedUsers();
-        searchSong.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        //setSearchDropDown();
+        //loadRecommendedUsers();
+    /*    searchSong.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 if(searchDropDown.getSelectedItem().toString().equals("Songs")){
@@ -85,6 +159,13 @@ public class SearchFragment extends Fragment {
                 if(searchDropDown.getSelectedItem().toString().equals("Users")){
                     getUserResults(s);
                 }
+                /*if(searchDropDown.getSelectedItem().toString().equals("Albums")){
+                    getAlbumResults(s);
+                }
+                if(searchDropDown.getSelectedItem().toString().equals("Artists")){
+                    getArtistResults(s);
+                }
+
                     return  true;
             }
             @Override
@@ -92,6 +173,8 @@ public class SearchFragment extends Fragment {
                 return false;
             }
         });
+
+     */
     }
 
     private void loadRecommendedUsers() {
@@ -114,12 +197,14 @@ public class SearchFragment extends Fragment {
             @Override
             public void OnUserClickListener(int position) {
                 goToUserDetailView(position);
+                searchUsersAdapter.notifyDataSetChanged();
             }
         };
         searchUsersAdapter= new SearchUsersAdapter(getActivity(),userList,onFollowClickListener,onUnfollowClickListener, onUserClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchUsersAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
+        searchUsersAdapter.notifyDataSetChanged();
 
     }
 
@@ -213,7 +298,7 @@ public class SearchFragment extends Fragment {
                 }
                 recommendedUsersTitle.setText("Search Results:");
                 searchSongAdapter.notifyDataSetChanged();
-                searchSong.clearFocus();
+                //searchSong.clearFocus();
             }
 
             @Override

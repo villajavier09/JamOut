@@ -11,7 +11,6 @@ public class ParseSong extends ParseObject {
     public static final String KEY_TITLE= "songTitle";
     public static final String KEY_ARTIST = "artist";
     public static final String KEY_IMAGEURL = "imageUrl";
-    public static final String KEY_GENRE = "genre";
 
     public ParseSong() {
     }

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.javiervillalpando.jamout.R;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -19,8 +20,8 @@ import com.parse.SignUpCallback;
 public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = "LoginActivity";
-    public EditText usernameField;
-    public EditText passwordField;
+    public TextInputLayout usernameField;
+    public TextInputLayout passwordField;
     public Button loginButton;
     public Button signupButton;
 
@@ -39,16 +40,16 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = usernameField.getText().toString();
-                String password = passwordField.getText().toString();
+                String username = usernameField.getEditText().getText().toString();
+                String password = passwordField.getEditText().getText().toString();
                 loginUser(username,password);
             }
         });
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = usernameField.getText().toString();
-                String password = passwordField.getText().toString();
+                String username = usernameField.getEditText().getText().toString();
+                String password = passwordField.getEditText().getText().toString();
                 signupUser(username,password);
             }
         });

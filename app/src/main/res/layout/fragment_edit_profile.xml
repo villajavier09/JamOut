@@ -11,109 +11,110 @@
     <RelativeLayout
         android:id="@+id/profileInformation"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@color/colorAccent">
 
-        <ImageView
-            android:id="@+id/profilePicture"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:visibility="invisible"
-            tools:srcCompat="@tools:sample/avatars" />
-
         <Button
             android:id="@+id/takePictureButton"
-            android:layout_width="wrap_content"
+            android:layout_width="175dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profilePicture"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/colorPrimaryDark"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-26dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/round_shape_button"
             android:text="Take Profile Picture"
             android:textColor="@color/colorPrimary" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="12dp"
+            android:text="Edit Profile Picture:"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18dp" />
+
+        <ImageView
+            android:id="@+id/profilePicture"
+            android:layout_width="250dp"
             android:layout_height="250dp"
-            android:layout_toRightOf="@id/profilePicture">
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-16dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:visibility="invisible"
+            tools:srcCompat="@tools:sample/avatars" />
 
-            <Button
-                android:id="@+id/saveChangesButton"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/editPassword"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorPrimaryDark"
-                android:text="Save Changes"
-                android:textColor="@color/colorPrimary" />
-
-            <Button
-                android:id="@+id/logoutButton"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/saveChangesButton"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/colorPrimaryDark"
-                android:text="Logout"
-                android:textColor="@color/colorPrimary" />
-
-
-            <EditText
-                android:id="@+id/editUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/saveChangesButton"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="32dp"
-                android:hint="Username:"
-                android:textColor="@color/colorPrimary"
-                android:textColorHint="@color/colorPrimary"
-                android:textSize="24dp" />
-
-
-            <EditText
-                android:id="@+id/editPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/editUsername"
-                android:layout_alignStart="@+id/editUsername"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:hint="New Password:"
-                android:textColorHint="@color/colorPrimary"
-                android:textSize="24dp" />
-        </RelativeLayout>
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Spinner
-            android:id="@+id/dropdownmenu"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/profilePicture">
+
+
+        <EditText
+            android:id="@+id/editUsername"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:hint="Username:"
+            android:textSize="24dp" />
+
+
+        <EditText
+            android:id="@+id/editPassword"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editUsername"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:hint="New Password:"
+            android:textSize="24dp" />
+
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"></Spinner>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12dp"
+            android:text="Edit Username/Password:"
+            android:textSize="18dp" />
     </RelativeLayout>
 
     <Button
-        android:id="@+id/addFavoritesButton"
-        android:layout_width="match_parent"
+        android:id="@+id/saveChangesButton"
+        android:layout_width="147dp"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:text="Add Favorites" />
+        android:layout_marginTop="8dp"
+        android:background="@drawable/round_shape_button"
+        android:text="Save Changes"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="150dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/round_shape_button"
+        android:text="Logout"
+        android:textColor="@color/colorPrimary" />
 
 
 </LinearLayout>
