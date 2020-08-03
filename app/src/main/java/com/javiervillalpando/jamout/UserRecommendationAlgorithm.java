@@ -31,7 +31,8 @@ public class UserRecommendationAlgorithm {
     public static List<ParseUser> possibleUsers = new ArrayList<>();
     public static List<ParseUser> sortedUsers = new ArrayList<>();
     //public static Map<ParseUser,Integer> nonSortedMap = new HashMap<ParseUser, Integer>();
-    public static Map<Float,ParseUser> nonSortedMap = new HashMap<Float,ParseUser>();
+    //public static Map<Float,ParseUser> nonSortedMap = new HashMap<Float,ParseUser>();
+    public static TreeMap<Float,ParseUser> sortUser = new TreeMap<Float,ParseUser>();
     private static List<ParseSong> currentUserFavoriteSongs;
     private static List<String> currentUserFavoriteGenres;
     //private static List<ParseAlbum> currentUserFavoriteAlbums;
@@ -65,21 +66,10 @@ public class UserRecommendationAlgorithm {
             //matchingScore = ((float)(favoriteAlbumScore+favoriteArtistScore+favoriteSongScore)/3);
             matchingScore = ((float)compareFavoriteSongs(userFavoriteSongs)+((float)compareFavoriteGenres(userFavoriteGenre)))/2;
             Log.d("ALgo", "Username "+possibleUsers.get(i).getUsername()+" Matching Score:" +matchingScore);
-            nonSortedMap.put(matchingScore,possibleUsers.get(i));
+            //nonSortedMap.put(matchingScore,possibleUsers.get(i));
+            sortUser.put(matchingScore,possibleUsers.get(i));
         }
-        /*for(Map.Entry<ParseUser,Float> entry: entriesSortedByValues(nonSortedMap)){
-            sortedUsers.add(entry.getKey());
-        }*/
-        TreeMap<Float,ParseUser> sortUser = new TreeMap<>(nonSortedMap);
         sortedUsers = new ArrayList<>(sortUser.values());
-        /*ArrayList<String> sortedUserNames = new ArrayList<>();
-        for(int i = 0; i < sortedUsers.size();i++){
-            sortedUserNames.add(sortedUsers.get(i).getUsername());
-        }
-
-
-        Log.d("algo", "compareUsers: "+sortedUserNames);
-         */
         //Adds the 5 users with highest "Match"
         if(sortedUsers.size() < 5){
             suggestedUsers.addAll(sortedUsers);

@@ -12,7 +12,9 @@ import com.javiervillalpando.jamout.mainactivities.share.ShareSongFragment;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
 
 import android.view.MenuItem;
 
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = ProfileFragment;
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.frameContainer,fragment).commit();
+                fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in,R.anim.slide_out,R.anim.slide_in,R.anim.slide_out).replace(R.id.frameContainer,fragment).commit();
                 return true;
             }
         });

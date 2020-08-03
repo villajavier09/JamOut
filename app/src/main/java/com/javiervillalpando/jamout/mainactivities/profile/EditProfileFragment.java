@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.javiervillalpando.jamout.R;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -49,8 +50,8 @@ public class EditProfileFragment extends Fragment {
     private Button saveChangesButton;
     private Button takePictureButton;
     private Button logoutButton;
-    private EditText editUsername;
-    private EditText editPassword;
+    private TextInputLayout editUsername;
+    private TextInputLayout editPassword;
     private ImageView profilePicture;
     private File photoFile;
     private String photoFileName = "photo.jpg";
@@ -170,11 +171,11 @@ public class EditProfileFragment extends Fragment {
     public void goToProfile(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         ParseUser currentUser = ParseUser.getCurrentUser();
-        if(!editUsername.getText().toString().matches("") && editUsername.getText().toString() != null){
-            currentUser.setUsername(editUsername.getText().toString());
+        if(!editUsername.getEditText().getText().toString().matches("") && editUsername.getEditText().getText().toString() != null){
+            currentUser.setUsername(editUsername.getEditText().getText().toString());
         }
-        if (!editPassword.getText().toString().matches("") && editPassword.getText().toString() != null) {
-            currentUser.setPassword(editPassword.getText().toString());
+        if (!editPassword.getEditText().getText().toString().matches("") && editPassword.getEditText().getText().toString() != null) {
+            currentUser.setPassword(editPassword.getEditText().getText().toString());
         }
         if(photoFile != null){
             currentUser.put("profilePicture",new ParseFile(photoFile));

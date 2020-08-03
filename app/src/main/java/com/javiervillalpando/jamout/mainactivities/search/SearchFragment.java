@@ -1,5 +1,6 @@
 package com.javiervillalpando.jamout.mainactivities.search;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.loader.content.AsyncTaskLoader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +27,8 @@ import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.UserRecommendationAlgorithm;
 import com.javiervillalpando.jamout.adapters.FavoriteSongAdapter;
+import com.javiervillalpando.jamout.adapters.SearchAlbumsAdapter;
+import com.javiervillalpando.jamout.adapters.SearchArtistsAdapter;
 import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
 import com.javiervillalpando.jamout.adapters.SearchUsersAdapter;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
@@ -40,7 +45,12 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import kaaes.spotify.webapi.android.models.Album;
+import kaaes.spotify.webapi.android.models.AlbumSimple;
+import kaaes.spotify.webapi.android.models.AlbumsPager;
+import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
@@ -54,9 +64,12 @@ public class SearchFragment extends Fragment {
     private SearchSongAdapter searchSongAdapter;
     private SearchUsersAdapter searchUsersAdapter;
     private ArrayList<Track> trackList;
+    private ArrayList<AlbumSimple> albumList;
+    private ArrayList<Artist> artistList;
     private ArrayList<ParseUser> userList;
     private TextView recommendedUsersTitle;
     private Spinner searchDropDown;
+    private ProgressBar progressBar;
 
 
     public SearchFragment(){
@@ -73,6 +86,8 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recommendedUsersTitle = view.findViewById(R.id.recommendedUsersTitle);
+        recommendedUsersList = view.findViewById(R.id.recommendedUsersList);
+        //loadRecommendedUsers();
         //searchSong = view.findViewById(R.id.searchSong);
         searchBar = view.findViewById(R.id.searchBar);
         searchBar.inflateMenu(R.menu.menu_main);
@@ -116,10 +131,42 @@ public class SearchFragment extends Fragment {
                 }
                 if(item.getItemId() == R.id.albums){
                     searchBar.setHint("Search for Albums");
+                    searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+                        @Override
+                        public void onSearchStateChanged(boolean enabled) {
+
+                        }
+
+                        @Override
+                        public void onSearchConfirmed(CharSequence text) {
+                            getAlbumResults(text.toString());
+                        }
+
+                        @Override
+                        public void onButtonClicked(int buttonCode) {
+
+                        }
+                    });
 
                 }
                 if(item.getItemId() == R.id.artists){
                     searchBar.setHint("Search for Artists");
+                    searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+                        @Override
+                        public void onSearchStateChanged(boolean enabled) {
+
+                        }
+
+                        @Override
+                        public void onSearchConfirmed(CharSequence text) {
+                            getArtistResults(text.toString());
+                        }
+
+                        @Override
+                        public void onButtonClicked(int buttonCode) {
+
+                        }
+                    });
                 }
                 if(item.getItemId() == R.id.users){
                     searchBar.setHint("Search for Users");
@@ -144,41 +191,68 @@ public class SearchFragment extends Fragment {
             }
         });
         recommendedUsersList = view.findViewById(R.id.recommendedUsersList);
-        //searchDropDown = view.findViewById(R.id.searchDropDown);
         trackList = new ArrayList<Track>();
+        albumList = new ArrayList<AlbumSimple>();
         userList = new ArrayList<ParseUser>();
+        artistList = new ArrayList<Artist>();
+        progressBar = view.findViewById(R.id.progressbar);
+        recommendedUsersList.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        loadRecommendedUsers();
 
-        //setSearchDropDown();
-        //loadRecommendedUsers();
-    /*    searchSong.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    }
+
+
+    private void getArtistResults(String s) {
+        final SearchArtistsAdapter searchArtistsAdapter = new SearchArtistsAdapter(getActivity(),artistList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recommendedUsersList.setAdapter(searchArtistsAdapter);
+        recommendedUsersList.setLayoutManager(linearLayoutManager);
+        SpotifyRequests.searchArtists(s, searchArtistsAdapter, new Callback<ArtistsPager>() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                if(searchDropDown.getSelectedItem().toString().equals("Songs")){
-                    getSongResults(s);
+            public void success(ArtistsPager artistsPager, Response response) {
+                artistList.clear();
+                ArrayList<Artist> artists = (ArrayList<Artist>) artistsPager.artists.items;
+                for(Artist artist: artists){
+                    artistList.add(artist);
                 }
-                if(searchDropDown.getSelectedItem().toString().equals("Users")){
-                    getUserResults(s);
-                }
-                /*if(searchDropDown.getSelectedItem().toString().equals("Albums")){
-                    getAlbumResults(s);
-                }
-                if(searchDropDown.getSelectedItem().toString().equals("Artists")){
-                    getArtistResults(s);
-                }
-
-                    return  true;
+                recommendedUsersTitle.setText("Search Results:");
+                searchArtistsAdapter.notifyDataSetChanged();
             }
+
             @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
+            public void failure(RetrofitError error) {
+
             }
         });
+    }
 
-     */
+
+    private void getAlbumResults(String s) {
+        final SearchAlbumsAdapter searchAlbumsAdapter = new SearchAlbumsAdapter(getActivity(),albumList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recommendedUsersList.setAdapter(searchAlbumsAdapter);
+        recommendedUsersList.setLayoutManager(linearLayoutManager);
+        SpotifyRequests.searchAlbums(s, searchAlbumsAdapter, new Callback<AlbumsPager>() {
+            @Override
+            public void success(AlbumsPager albumsPager, Response response) {
+                albumList.clear();
+                ArrayList<AlbumSimple> albums = (ArrayList<AlbumSimple>) albumsPager.albums.items;
+                for(AlbumSimple album: albums){
+                    albumList.add(album);
+                }
+                recommendedUsersTitle.setText("Search Results:");
+                searchAlbumsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+            }
+        });
     }
 
     private void loadRecommendedUsers() {
-        userList = (ArrayList<ParseUser>)UserRecommendationAlgorithm.recommendUsers();
+        recommendedUsersList.setVisibility(View.VISIBLE);
         SearchUsersAdapter.OnFollowClickListener onFollowClickListener = new SearchUsersAdapter.OnFollowClickListener() {
             @Override
             public void OnFollowClicked(int position) {
@@ -204,6 +278,8 @@ public class SearchFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchUsersAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
+        userList.addAll((ArrayList<ParseUser>)UserRecommendationAlgorithm.recommendUsers());
+        progressBar.setVisibility(View.GONE);
         searchUsersAdapter.notifyDataSetChanged();
 
     }
@@ -252,7 +328,8 @@ public class SearchFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putParcelable("UserItem",user);
         otherUserProfileFragment.setArguments(bundle);
-        fragmentManager.beginTransaction().replace(R.id.frameContainer,otherUserProfileFragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in,R.anim.fade_out)
+                .replace(R.id.frameContainer,otherUserProfileFragment).addToBackStack(null).commit();
     }
     private void unfollowUser(int position) {
         ParseUser.getCurrentUser().getRelation("following").remove(userList.get(position));
@@ -362,10 +439,5 @@ public class SearchFragment extends Fragment {
         }
         Joiner joiner = Joiner.on(", ");
         return joiner.join(names);
-    }
-    public void setSearchDropDown(){
-        String[] dropdownOptions = new String[]{"Songs","Albums","Artists","Users"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,dropdownOptions);
-        searchDropDown.setAdapter(adapter);
     }
 }

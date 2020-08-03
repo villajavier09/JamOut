@@ -57,31 +57,43 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/profilePicture">
+        android:layout_height="wrap_content">
 
-
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/editUsername"
-            android:layout_width="175dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView2"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
-            android:hint="Username:"
-            android:textSize="24dp" />
+            android:hint="Username:">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
 
-        <EditText
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/editPassword"
-            android:layout_width="175dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/editUsername"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="12dp"
             android:hint="New Password:"
-            android:textSize="24dp" />
+            android:inputType="textPassword"
+            app:endIconMode="password_toggle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:inputType="textPassword"
+                android:layout_height="wrap_content"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
             android:id="@+id/textView2"

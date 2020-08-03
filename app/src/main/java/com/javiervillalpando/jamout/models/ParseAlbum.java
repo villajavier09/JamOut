@@ -5,6 +5,7 @@ import com.parse.ParseObject;
 
 @ParseClassName("Album")
 public class ParseAlbum extends ParseObject {
+    public static final String KEY_ALBUMTITLE = "albumTitle";
     public static final String KEY_ALBUMID = "albumId";
     public static final String KEY_IMAGEURL= "albumCoverUrl";
     public static final String KEY_ARTIST = "albumArtist";
@@ -12,6 +13,12 @@ public class ParseAlbum extends ParseObject {
     public ParseAlbum() {
     }
 
+    public String getAlbumTitle(){
+        return getString(KEY_ALBUMTITLE);
+    }
+    public void setAlbumTitle(String albumTitle){
+        put(KEY_ALBUMTITLE,albumTitle);
+    }
     public String getAlbumId(){
         return getString(KEY_ALBUMID);
     }

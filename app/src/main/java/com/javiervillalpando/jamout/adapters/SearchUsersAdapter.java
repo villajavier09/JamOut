@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,7 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
     public interface  OnUnfollowClickListener{
         void OnUnfollowClicked(int position);
     }
+
 
     public SearchUsersAdapter(Context context, List<ParseUser> userList, OnFollowClickListener onFollowClickListener, OnUnfollowClickListener onUnfollowClickListener, OnUserClickListener onUserClickListener){
         this.context = context;
