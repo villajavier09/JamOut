@@ -453,8 +453,15 @@ public class SearchFragment extends Fragment {
                 favoriteSong(position);
             }
         };
+        SearchSongAdapter.OnDoubleClickListener onDoubleClickListener = new SearchSongAdapter.OnDoubleClickListener() {
+            private int position;
+            @Override
+            public void OnDoubleClicked(int position) {
+                favoriteSong(position);
+            }
+        };
 
-        searchSongAdapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener);
+        searchSongAdapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener, onDoubleClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchSongAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);

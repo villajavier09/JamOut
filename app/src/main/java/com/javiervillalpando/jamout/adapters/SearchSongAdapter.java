@@ -1,11 +1,14 @@
 package com.javiervillalpando.jamout.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -14,7 +17,9 @@ import com.google.common.base.Joiner;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.javiervillalpando.jamout.OnDoubleTapListener;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.mainactivities.search.SearchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +36,21 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
     public interface OnFavoriteClickListener{
         void OnFavoriteClicked(int position);
     }
+    public interface  OnDoubleClickListener{
+        void OnDoubleClicked(int position);
+    }
 
     ArrayList<Track> trackList = new ArrayList<Track>();
     OnShareClickListener onShareClickListener;
     OnFavoriteClickListener onFavoriteClickListener;
+    OnDoubleClickListener onDoubleClickList;
 
-    public SearchSongAdapter(Context context, ArrayList<Track> tracks, OnShareClickListener onShareClickListener, OnFavoriteClickListener onFavoriteClickListener){
+    public SearchSongAdapter(Context context, ArrayList<Track> tracks, OnShareClickListener onShareClickListener, OnFavoriteClickListener onFavoriteClickListener, OnDoubleClickListener onDoubleClickListener){
         trackList = tracks;
         this.context = context;
         this.onShareClickListener = onShareClickListener;
         this.onFavoriteClickListener = onFavoriteClickListener;
+        this.onDoubleClickList = onDoubleClickListener;
     }
     @NonNull
     @Override
@@ -62,6 +72,7 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
         public TextView songTitle;
         public TextView artistTitle;
         public ImageView albumCover;
+        public RelativeLayout relativeLayout;
         public Button shareSongButton;
         public Button favoriteButton;
 
@@ -72,8 +83,10 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
             albumCover = itemView.findViewById(R.id.albumCover);
             shareSongButton = itemView.findViewById(R.id.shareSongButton);
             favoriteButton = itemView.findViewById(R.id.favoriteButton);
+            relativeLayout = itemView.findViewById(R.id.relativeLayout);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         public void bind(Track track) {
             songTitle.setText("Song: "+track.name);
             List<String> names = new ArrayList<>();
@@ -97,6 +110,15 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
                     onFavoriteClickListener.OnFavoriteClicked(getAdapterPosition());
                 }
             });
+            relativeLayout.setOnTouchListener(new OnDoubleTapListener(context){
+                @Override
+                public void onDoubleTap(MotionEvent e) {
+                    super.onDoubleTap(e);
+                    onDoubleClickList.OnDoubleClicked(getAdapterPosition());
+
+                }
+            });
+
         }
     }
     @Override
