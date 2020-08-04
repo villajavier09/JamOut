@@ -2,17 +2,21 @@ package com.javiervillalpando.jamout.mainactivities.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,9 +24,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
+import com.javiervillalpando.jamout.adapters.FavoriteAlbumAdapter;
+import com.javiervillalpando.jamout.adapters.FavoriteArtistAdapter;
 import com.javiervillalpando.jamout.adapters.FavoriteSongAdapter;
 import com.javiervillalpando.jamout.mainactivities.LoginActivity;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.models.ParseAlbum;
+import com.javiervillalpando.jamout.models.ParseArtist;
 import com.javiervillalpando.jamout.models.ParseSong;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -42,8 +50,13 @@ public class ProfileFragment extends Fragment {
     private ImageView profilePicture;
     private Spinner dropdown;
     private RecyclerView favoritesList;
+    private ProgressBar progressBar;
     protected FavoriteSongAdapter adapter;
-    protected List<ParseSong> favoriteSongs;
+    protected FavoriteAlbumAdapter favoriteAlbumAdapter;
+    protected FavoriteArtistAdapter favoriteArtistAdapter;
+    protected List<ParseSong> favoriteSongs = new ArrayList<>();
+    protected List<ParseAlbum> favoriteAlbums = new ArrayList<>();
+    protected List<ParseArtist> favoriteArtists = new ArrayList<>();
 
     public ProfileFragment(){
         //Empty constructor for fragment
@@ -53,13 +66,7 @@ public class ProfileFragment extends Fragment {
         setViews(view);
         setDropDown();
         loadProfilePicture();
-
         username.setText(ParseUser.getCurrentUser().getUsername());
-        favoriteSongs = new ArrayList<>();
-        adapter = new FavoriteSongAdapter(getActivity(),favoriteSongs);
-        favoritesList.setAdapter(adapter);
-        favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        queryFavoriteSongs();
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,51 +94,53 @@ public class ProfileFragment extends Fragment {
                 goToFollowingFragment();
             }
         });
+
+        adapter = new FavoriteSongAdapter(getActivity(),favoriteSongs);
+        favoritesList.setAdapter(adapter);
+        favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                queryFavoriteSongs();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }).start();
+
+
+
+
+     dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 0 ){
+                    favoritesList.setAdapter(adapter);
+                }
+                if(i == 1){
+                    FavoriteAlbumAdapter favoriteAlbumAdapter = new FavoriteAlbumAdapter(getActivity(),favoriteAlbums);
+                    favoritesList.setAdapter(favoriteAlbumAdapter);
+                    favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    queryFavoriteAlbums();
+                    favoriteAlbumAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*setViews(view);
-        setDropDown();
-        loadProfilePicture();
-
-        username.setText(ParseUser.getCurrentUser().getUsername());
-        favoriteSongs = new ArrayList<>();
-        adapter = new FavoriteSongAdapter(getActivity(),favoriteSongs);
-        favoritesList.setAdapter(adapter);
-        favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        queryFavoriteSongs();
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ParseUser.logOut();
-                ParseUser currentUser = ParseUser.getCurrentUser();
-                goToLoginActivity();
-            }
-        });
-        editProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToEditProfileFragment();
-            }
-        });
-        followers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToFollowersFragment();
-            }
-        });
-        following.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToFollowingFragment();
-            }
-        });
-
-         */
     }
 
     private void loadProfilePicture() {
@@ -154,9 +163,11 @@ public class ProfileFragment extends Fragment {
         dropdown = view.findViewById(R.id.dropdownmenu);
         favoritesList = view.findViewById(R.id.favoritesList);
         profilePicture = view.findViewById(R.id.profilePicture);
+        progressBar = view.findViewById(R.id.progressBar);
     }
 
     private void queryFavoriteSongs() {
+        favoriteSongs.clear();
         ArrayList<ParseSong> currentFavorites = (ArrayList<ParseSong>) ParseUser.getCurrentUser().get("favoriteSongs");
         if(currentFavorites == null){
             return;
@@ -168,9 +179,44 @@ public class ProfileFragment extends Fragment {
             }catch(ParseException e){
                 e.printStackTrace();
             }
-            adapter.notifyDataSetChanged();
         }
     }
+    private void queryFavoriteAlbums() {
+        favoriteAlbums.clear();
+        ArrayList<ParseAlbum> currentFavorites = (ArrayList<ParseAlbum>) ParseUser.getCurrentUser().get("favoriteAlbums");
+        Log.d(TAG, "queryFavoriteAlbums: "+ currentFavorites.toString());
+        if(currentFavorites == null){
+            return;
+        }
+        for(int i = 0; i < currentFavorites.size();i++){
+            try {
+                ParseAlbum currentFavorite = (ParseAlbum) currentFavorites.get(i).fetch();
+                favoriteAlbums.add(currentFavorite);
+                Log.d(TAG, "queryFavoriteAlbums: "+favoriteAlbums.toString());
+            }catch(ParseException e){
+                e.printStackTrace();
+            }
+        }
+        //favoriteAlbumAdapter.notifyDataSetChanged();
+    }
+
+    private void queryFavoriteArtists() {
+        favoriteArtists.clear();
+        ArrayList<ParseArtist> currentFavorites = (ArrayList<ParseArtist>) ParseUser.getCurrentUser().get("favoriteArtists");
+        if(currentFavorites == null){
+            return;
+        }
+        for(int i = 0; i < currentFavorites.size();i++){
+            try {
+                ParseArtist currentFavorite = (ParseArtist) currentFavorites.get(i).fetch();
+                favoriteArtists.add(currentFavorite);
+            }catch(ParseException e){
+                e.printStackTrace();
+            }
+        }
+
+    }
+
 
     public void setDropDown(){
         String[] dropdownOptions = new String[]{"Favorite Songs","Favorite Albums","Favorite Artists"};

@@ -33,10 +33,21 @@ import retrofit.client.Response;
 public class SearchArtistsAdapter extends RecyclerView.Adapter<SearchArtistsAdapter.ViewHolder> {
     private List<Artist> artists = new ArrayList<>();
     Context context;
+    SearchArtistsAdapter.OnShareClickListener onShareClickListener;
+    SearchArtistsAdapter.OnFavoriteClickListener onFavoriteClickListener;
 
-    public SearchArtistsAdapter(Context context, List<Artist> artists){
+    public  interface OnShareClickListener {
+        void OnShareClicked(int position);
+    }
+    public interface OnFavoriteClickListener{
+        void OnFavoriteClicked(int position);
+    }
+
+    public SearchArtistsAdapter(Context context, List<Artist> artists, SearchArtistsAdapter.OnShareClickListener onShareClickListener, SearchArtistsAdapter.OnFavoriteClickListener onFavoriteClickListener){
         this.artists = artists;
         this.context = context;
+        this.onFavoriteClickListener = onFavoriteClickListener;
+        this.onShareClickListener = onShareClickListener;
     }
     @NonNull
     @Override
@@ -63,12 +74,16 @@ public class SearchArtistsAdapter extends RecyclerView.Adapter<SearchArtistsAdap
         private TextView artistName;
         private TextView genreName;
         private ImageView artistPicture;
+        private Button favoriteArtistButton;
+        private Button shareArtistButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             artistName = itemView.findViewById(R.id.artistName);
             genreName = itemView.findViewById(R.id.genreName);
             artistPicture = itemView.findViewById(R.id.artistPicture);
+            favoriteArtistButton = itemView.findViewById(R.id.favoriteArtistButton);
+            shareArtistButton = itemView.findViewById(R.id.shareArtistButton);
         }
 
         public void bind(Artist artist) {
@@ -79,6 +94,18 @@ public class SearchArtistsAdapter extends RecyclerView.Adapter<SearchArtistsAdap
             if(artist.images.size() != 0){
                 Glide.with(context).load(artist.images.get(0).url).into(artistPicture);
             }
+            favoriteArtistButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onFavoriteClickListener.OnFavoriteClicked(getAdapterPosition());
+                }
+            });
+            shareArtistButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onShareClickListener.OnShareClicked(getAdapterPosition());
+                }
+            });
         }
     }
 }

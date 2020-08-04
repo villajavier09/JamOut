@@ -102,6 +102,13 @@
             android:layout_marginBottom="4dp"></Spinner>
     </RelativeLayout>
 
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:id="@+id/progressBar"
+        android:layout_height="wrap_content"
+        android:indeterminate="true">
+
+    </ProgressBar>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favoritesList"
         android:layout_width="match_parent"

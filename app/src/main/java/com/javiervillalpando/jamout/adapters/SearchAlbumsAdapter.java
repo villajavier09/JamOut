@@ -33,10 +33,22 @@ import retrofit.client.Response;
 public class SearchAlbumsAdapter extends RecyclerView.Adapter<SearchAlbumsAdapter.ViewHolder> {
     private List<AlbumSimple> albums = new ArrayList<>();
     Context context;
+    SearchAlbumsAdapter.OnShareClickListener onShareClickListener;
+    SearchAlbumsAdapter.OnFavoriteClickListener onFavoriteClickListener;
 
-    public SearchAlbumsAdapter(Context context, List<AlbumSimple> albums){
+    public  interface OnShareClickListener {
+        void OnShareClicked(int position);
+    }
+    public interface OnFavoriteClickListener{
+        void OnFavoriteClicked(int position);
+    }
+
+    public SearchAlbumsAdapter(Context context, List<AlbumSimple> albums, SearchAlbumsAdapter.OnShareClickListener onShareClickListener, SearchAlbumsAdapter.OnFavoriteClickListener onFavoriteClickListener){
         this.albums = albums;
         this.context = context;
+        this.onFavoriteClickListener = onFavoriteClickListener;
+        this.onShareClickListener = onShareClickListener;
+
     }
     @NonNull
     @Override
@@ -63,12 +75,16 @@ public class SearchAlbumsAdapter extends RecyclerView.Adapter<SearchAlbumsAdapte
         private TextView albumTitle;
         private TextView artistName;
         private ImageView albumCover;
+        private Button shareAlbumButton;
+        private Button favoriteAlbumButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             albumTitle = itemView.findViewById(R.id.albumTitle);
             artistName = itemView.findViewById(R.id.artistTitle);
             albumCover = itemView.findViewById(R.id.albumCover);
+            shareAlbumButton = itemView.findViewById(R.id.shareAlbumButton);
+            favoriteAlbumButton = itemView.findViewById(R.id.favoriteAlbumButton);
         }
 
         public void bind(AlbumSimple album) {
@@ -90,11 +106,21 @@ public class SearchAlbumsAdapter extends RecyclerView.Adapter<SearchAlbumsAdapte
 
                 }
             });
-
-
             if(album.images != null){
                 Glide.with(context).load(album.images.get(0).url).into(albumCover);
             }
+            shareAlbumButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onShareClickListener.OnShareClicked(getAdapterPosition());
+                }
+            });
+            favoriteAlbumButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onFavoriteClickListener.OnFavoriteClicked(getAdapterPosition());
+                }
+            });
         }
     }
 }

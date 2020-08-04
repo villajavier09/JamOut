@@ -8,6 +8,7 @@ public class ParseArtist extends ParseObject {
     public static final String KEY_ARTISTNAME = "artistName";
     public static final String KEY_ARTISTID = "artistId";
     public static final String KEY_ARTISTPICTURE = "artistPictureUrl";
+    public static final String KEY_ARTISTGENRE = "artstGenre";
 
     public ParseArtist() {
     }
@@ -30,4 +31,11 @@ public class ParseArtist extends ParseObject {
     public void setArtistPicture(String artistPictureUrl){
         put(KEY_ARTISTPICTURE,artistPictureUrl);
     }
+    public String getArtistGenre(){
+        return getString(KEY_ARTISTGENRE);
+    }
+    public void setArtistGenre(String artistGenre){
+        put(KEY_ARTISTGENRE,artistGenre);
+    }
+
 }

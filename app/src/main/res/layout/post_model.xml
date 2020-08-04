@@ -74,6 +74,17 @@
             android:layout_marginTop="8dp"
             android:text="TextView"
             android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/postType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/postArtistName"
+            android:layout_alignBottom="@+id/postImage"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="8dp"
+            android:text="TextView"
+            android:textSize="14dp" />
     </RelativeLayout>
 
     <TextView

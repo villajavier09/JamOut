@@ -35,10 +35,14 @@ import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
 import com.javiervillalpando.jamout.mainactivities.profile.EditProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.profile.OtherUserProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.share.ShareSongDialogFragment;
+import com.javiervillalpando.jamout.models.ParseAlbum;
+import com.javiervillalpando.jamout.models.ParseArtist;
 import com.javiervillalpando.jamout.models.ParseSong;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -198,13 +202,41 @@ public class SearchFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressbar);
         recommendedUsersList.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        loadRecommendedUsers();
+        //loadRecommendedUsers();
+       new Thread(new Runnable() {
+            @Override
+            public void run() {
+               loadRecommendedUsers();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        searchUsersAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+
+        }).start();
+
+
 
     }
 
-
     private void getArtistResults(String s) {
-        final SearchArtistsAdapter searchArtistsAdapter = new SearchArtistsAdapter(getActivity(),artistList);
+        SearchArtistsAdapter.OnShareClickListener onShareClickListener = new SearchArtistsAdapter.OnShareClickListener() {
+            private int position;
+            @Override
+            public void OnShareClicked(int position) {
+                showShareResultsDialogFragment(position,"Artist");
+            }
+        };
+        SearchArtistsAdapter.OnFavoriteClickListener onFavoriteClickListener = new SearchArtistsAdapter.OnFavoriteClickListener() {
+            @Override
+            public void OnFavoriteClicked(int position) {
+                favoriteArtist(position);
+            }
+        };
+        final SearchArtistsAdapter searchArtistsAdapter = new SearchArtistsAdapter(getActivity(),artistList,onShareClickListener,onFavoriteClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchArtistsAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
@@ -229,7 +261,19 @@ public class SearchFragment extends Fragment {
 
 
     private void getAlbumResults(String s) {
-        final SearchAlbumsAdapter searchAlbumsAdapter = new SearchAlbumsAdapter(getActivity(),albumList);
+        SearchAlbumsAdapter.OnShareClickListener onShareClickListener = new SearchAlbumsAdapter.OnShareClickListener() {
+            @Override
+            public void OnShareClicked(int position) {
+                showShareResultsDialogFragment(position,"Album");
+            }
+        };
+        SearchAlbumsAdapter.OnFavoriteClickListener onFavoriteClickListener = new SearchAlbumsAdapter.OnFavoriteClickListener() {
+            @Override
+            public void OnFavoriteClicked(int position) {
+                favoriteAlbum(position);
+            }
+        };
+        final SearchAlbumsAdapter searchAlbumsAdapter = new SearchAlbumsAdapter(getActivity(),albumList,onShareClickListener,onFavoriteClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchAlbumsAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
@@ -249,6 +293,40 @@ public class SearchFragment extends Fragment {
             public void failure(RetrofitError error) {
             }
         });
+    }
+
+    private void favoriteAlbum(int position) {
+        if(checkIfAlbumInFavorites(position)){
+            Toast.makeText(getActivity(),"Album already in favorites",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            final ParseAlbum album = new ParseAlbum();
+            album.setAlbumTitle(albumList.get(position).name);
+            album.setAlbumId(albumList.get(position).id);
+            album.setArtist(((TextView)recommendedUsersList.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.artistTitle)).getText().toString());
+            album.setImageUrl(albumList.get(position).images.get(0).url);
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            currentUser.add("favoriteAlbums", album);
+            currentUser.saveInBackground();
+            Toast.makeText(getActivity(), "Album Added to Favorites!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void favoriteArtist(int position){
+        if(checkIfArtistInFavorites(position)){
+            Toast.makeText(getActivity(),"Artist already in favorites",Toast.LENGTH_SHORT).show();
+        }
+        else{
+            final ParseArtist artist = new ParseArtist();
+            artist.setArtistId(artistList.get(position).id);
+            artist.setArtistName(artistList.get(position).name);
+            artist.setArtistGenre(artistList.get(position).genres.get(0));
+            artist.setArtistPicture(artistList.get(position).images.get(0).url);
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            currentUser.add("favoriteArtists", artist);
+            currentUser.saveInBackground();
+            Toast.makeText(getActivity(), "Artist Added to Favorites!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void loadRecommendedUsers() {
@@ -279,8 +357,7 @@ public class SearchFragment extends Fragment {
         recommendedUsersList.setAdapter(searchUsersAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
         userList.addAll((ArrayList<ParseUser>)UserRecommendationAlgorithm.recommendUsers());
-        progressBar.setVisibility(View.GONE);
-        searchUsersAdapter.notifyDataSetChanged();
+
 
     }
 
@@ -350,7 +427,7 @@ public class SearchFragment extends Fragment {
             private int position;
             @Override
             public void OnShareClicked(int position) {
-                showShareResultsDialogFragment(position);
+                showShareResultsDialogFragment(position,"Song");
             }
         };
         SearchSongAdapter.OnFavoriteClickListener onFavoriteClickListener = new SearchSongAdapter.OnFavoriteClickListener() {
@@ -420,16 +497,73 @@ public class SearchFragment extends Fragment {
         }
         return false;
     }
+    private Boolean checkIfAlbumInFavorites(int position){
+        ArrayList<ParseAlbum> currentFavorites = (ArrayList<ParseAlbum>) ParseUser.getCurrentUser().get("favoriteAlbums");
+        if(currentFavorites == null){
+            return false;
+        }
+        String albumId = albumList.get(position).id;
+        for(int i = 0; i <currentFavorites.size();i++){
+            try{
+                ParseAlbum currentFavorite = currentFavorites.get(i).fetch();
+                if(currentFavorite.getAlbumId() != null && currentFavorite.getAlbumId().equals(albumId)){
+                    return true;
+                }
+            }catch (ParseException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+    private Boolean checkIfArtistInFavorites(int position){
+        ArrayList<ParseArtist> currentArtists = (ArrayList<ParseArtist>) ParseUser.getCurrentUser().get("favoriteArtists");
+        if(currentArtists == null){
+            return false;
+        }
+        String artistId = artistList.get(position).id;
+        for(int i = 0; i< currentArtists.size(); i++){
+            try {
+                ParseArtist currentArtist = currentArtists.get(i).fetch();
+                if(currentArtist.getArtistId() != null && currentArtist.getArtistId().equals(artistId)){
+                    return true;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 
-    private void showShareResultsDialogFragment(int position) {
+    private void showShareResultsDialogFragment(int position, String type) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         ShareSongDialogFragment shareResultsDialogFragment = new ShareSongDialogFragment();
         Bundle args = new Bundle();
-        args.putString("name", trackList.get(position).name);
-        args.putString("artistname", artistFormat(trackList.get(position).artists));
-        args.putString("coverUrl",trackList.get(position).album.images.get(0).url);
-        args.putString("songId",trackList.get(position).id);
-        shareResultsDialogFragment.setArguments(args);
+
+        if(type.equals("Song")){
+            args.putString("type",type);
+            args.putString("name", trackList.get(position).name);
+            args.putString("artistname", artistFormat(trackList.get(position).artists));
+            args.putString("coverUrl",trackList.get(position).album.images.get(0).url);
+            args.putString("Id",trackList.get(position).id);
+            shareResultsDialogFragment.setArguments(args);
+        }
+        if(type.equals("Album")){
+            args.putString("type",type);
+            args.putString("name",albumList.get(position).name);
+            args.putString("artistname",((TextView)recommendedUsersList.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.artistTitle)).getText().toString());
+            args.putString("coverUrl",albumList.get(position).images.get(0).url);
+            args.putString("Id",albumList.get(position).id);
+            shareResultsDialogFragment.setArguments(args);
+        }
+        if(type.equals("Artist")){
+            args.putString("type",type);
+            args.putString("name",artistList.get(position).name);
+            args.putString("artistname",(artistList.get(position).genres.get(0)));
+            args.putString("coverUrl",artistList.get(position).images.get(0).url);
+            args.putString("Id",artistList.get(position).id);
+            shareResultsDialogFragment.setArguments(args);
+        }
+
         shareResultsDialogFragment.show(fm,"fragment_share_results_dialog");
     }
     private String artistFormat(List<ArtistSimple> artists){

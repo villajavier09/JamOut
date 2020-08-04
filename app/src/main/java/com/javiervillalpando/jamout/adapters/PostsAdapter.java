@@ -53,6 +53,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView postUsername;
+        private TextView postType;
         private TextView postDescription;
         private TextView postSongTitle;
         private TextView postArtistName;
@@ -67,14 +68,31 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             postArtistName = itemView.findViewById(R.id.postArtistName);
             postImage = itemView.findViewById(R.id.postImage);
             postUserProfileImage = itemView.findViewById(R.id.postUserProfileImage);
+            postType = itemView.findViewById(R.id.postType);
         }
 
         public void bind(Post post) throws ParseException {
             postUsername.setText(post.getUser().getUsername());
-            postDescription.setText(post.getDescription());
-            postSongTitle.setText(post.getSong().getSongTitle());
-            postArtistName.setText(post.getSong().getArtist());
-            Glide.with(context).load(post.getSong().getImageUrl()).into(postImage);
+            if(post.getType().equals("Song")||post.getType() == null){
+                postDescription.setText(post.getDescription());
+                postSongTitle.setText(post.getSong().getSongTitle());
+                postArtistName.setText(post.getSong().getArtist());
+                Glide.with(context).load(post.getSong().getImageUrl()).into(postImage);
+            }
+            if(post.getType().equals("Album")){
+                postDescription.setText(post.getDescription());
+                postSongTitle.setText(post.getAlbum().getAlbumTitle());
+                postArtistName.setText(post.getAlbum().getArtist());
+                Glide.with(context).load(post.getAlbum().getImageUrl()).into(postImage);
+            }
+            if(post.getType().equals("Artist")){
+                postDescription.setText(post.getDescription());
+                postSongTitle.setText(post.getArtist().getArtistName());
+                postArtistName.setText(post.getArtist().getArtistGenre());
+                Glide.with(context).load(post.getArtist().getArtistPicture()).into(postImage);
+            }
+
+            postType.setText(post.getType());
             ParseFile image = (ParseFile) post.getUser().get("profilePicture");
             String imageUrl = "";
             if(image != null){
