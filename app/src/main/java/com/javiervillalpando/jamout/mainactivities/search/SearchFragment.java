@@ -1,5 +1,6 @@
 package com.javiervillalpando.jamout.mainactivities.search;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -23,7 +25,9 @@ import androidx.loader.content.AsyncTaskLoader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.base.Joiner;
+import com.javiervillalpando.jamout.OnSwipeTouchListener;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.UserRecommendationAlgorithm;
 import com.javiervillalpando.jamout.adapters.FavoriteSongAdapter;
@@ -73,6 +77,7 @@ public class SearchFragment extends Fragment {
     private ArrayList<ParseUser> userList;
     private TextView recommendedUsersTitle;
     private Spinner searchDropDown;
+    private LinearLayout linearLayout;
     private ProgressBar progressBar;
 
 
@@ -86,6 +91,7 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_search,container,false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -199,6 +205,7 @@ public class SearchFragment extends Fragment {
         albumList = new ArrayList<AlbumSimple>();
         userList = new ArrayList<ParseUser>();
         artistList = new ArrayList<Artist>();
+        linearLayout = view.findViewById(R.id.linearLayout);
         progressBar = view.findViewById(R.id.progressbar);
         recommendedUsersList.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -217,7 +224,16 @@ public class SearchFragment extends Fragment {
             }
 
         }).start();
-
+        recommendedUsersList.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            public void onSwipeLeft() {
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+                bottomNavigationView.setSelectedItemId(R.id.profileTab);
+            }
+            public void onSwipeRight() {
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+                bottomNavigationView.setSelectedItemId(R.id.mainfeedTab);
+            }
+        });
 
 
     }

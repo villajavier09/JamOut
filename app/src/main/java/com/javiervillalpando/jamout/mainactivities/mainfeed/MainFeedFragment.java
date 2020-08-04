@@ -1,20 +1,29 @@
 package com.javiervillalpando.jamout.mainactivities.mainfeed;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.javiervillalpando.jamout.OnSwipeTouchListener;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.adapters.PostsAdapter;
+import com.javiervillalpando.jamout.mainactivities.MainActivity;
+import com.javiervillalpando.jamout.mainactivities.profile.EditProfileFragment;
+import com.javiervillalpando.jamout.mainactivities.search.SearchFragment;
 import com.javiervillalpando.jamout.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -30,21 +39,29 @@ public class MainFeedFragment extends Fragment {
     public static final String TAG = "Main Feed";
     protected PostsAdapter adapter;
     protected List<String> followingUsers;
+    private RelativeLayout relativeLayout;
     protected List<Post> allPosts;
     public MainFeedFragment(){
         //Empty constructor for fragment
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_feed,container,false);
         mainFeed = view.findViewById(R.id.mainFeed);
-
+        relativeLayout = view.findViewById(R.id.relativeLayout);
         allPosts = new ArrayList<>();
         adapter= new PostsAdapter(getContext(), allPosts);
         mainFeed.setAdapter(adapter);
         mainFeed.setLayoutManager(new LinearLayoutManager(getContext()));
+        mainFeed.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            public void onSwipeLeft() {
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+                bottomNavigationView.setSelectedItemId(R.id.searchTab);
+            }
+        });
         queryFollowing();
         return view;
     }

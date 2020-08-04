@@ -23,7 +23,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.javiervillalpando.jamout.OnSwipeTouchListener;
 import com.javiervillalpando.jamout.adapters.FavoriteAlbumAdapter;
 import com.javiervillalpando.jamout.adapters.FavoriteArtistAdapter;
 import com.javiervillalpando.jamout.adapters.FavoriteSongAdapter;
@@ -111,9 +113,12 @@ public class ProfileFragment extends Fragment {
                 });
             }
         }).start();
-
-
-
+     favoritesList.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+         public void onSwipeRight() {
+             BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+             bottomNavigationView.setSelectedItemId(R.id.searchTab);
+         }
+     });
 
      dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -1,8 +1,11 @@
 package com.javiervillalpando.jamout.mainactivities;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.javiervillalpando.jamout.OnSwipeTouchListener;
 import com.javiervillalpando.jamout.R;
 import com.javiervillalpando.jamout.mainactivities.mainfeed.MainFeedFragment;
 import com.javiervillalpando.jamout.mainactivities.profile.ProfileFragment;
@@ -17,12 +20,20 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     private BottomNavigationView bottomNavigationView;
+    private FrameLayout frameLayout;
+    private RelativeLayout relativeLayout;
+    private Context context;
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         final Fragment ShareSongFragment = new ShareSongFragment();
         final Fragment SearchFragment = new SearchFragment();
         final Fragment ProfileFragment = new ProfileFragment();
+        frameLayout = findViewById(R.id.frameContainer);
+        relativeLayout = findViewById(R.id.relativeLayou);
         //Basic navigation bar to go between the main fragments of the app
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -57,5 +70,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         bottomNavigationView.setSelectedItemId(R.id.mainfeedTab);
+
     }
 }
