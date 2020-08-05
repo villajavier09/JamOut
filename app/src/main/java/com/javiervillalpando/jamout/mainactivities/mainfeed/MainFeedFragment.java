@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.javiervillalpando.jamout.OnSwipeTouchListener;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.SpotifyPlayBack;
 import com.javiervillalpando.jamout.adapters.PostsAdapter;
 import com.javiervillalpando.jamout.mainactivities.MainActivity;
 import com.javiervillalpando.jamout.mainactivities.profile.EditProfileFragment;
@@ -51,9 +52,25 @@ public class MainFeedFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_feed,container,false);
         mainFeed = view.findViewById(R.id.mainFeed);
+        PostsAdapter.OnCoverClickListener onCoverClickListener = new PostsAdapter.OnCoverClickListener() {
+            @Override
+            public void OnCoverClicked(int position) {
+                SpotifyPlayBack.PlayMusic(getContext(), allPosts.get(position).getUri());
+            }
+
+            @Override
+            public void OnCoverSecondClick(int position) {
+                SpotifyPlayBack.pauseMusic(getContext());
+            }
+
+            @Override
+            public void OnCoverAdditionalClick(int position) {
+                SpotifyPlayBack.resumeMusic(getContext());
+            }
+        };
         relativeLayout = view.findViewById(R.id.relativeLayout);
         allPosts = new ArrayList<>();
-        adapter= new PostsAdapter(getContext(), allPosts);
+        adapter= new PostsAdapter(getContext(), allPosts, onCoverClickListener);
         mainFeed.setAdapter(adapter);
         mainFeed.setLayoutManager(new LinearLayoutManager(getContext()));
         mainFeed.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {

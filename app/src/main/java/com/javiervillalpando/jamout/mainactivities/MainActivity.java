@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.javiervillalpando.jamout.OnSwipeTouchListener;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.SpotifyPlayBack;
 import com.javiervillalpando.jamout.mainactivities.mainfeed.MainFeedFragment;
 import com.javiervillalpando.jamout.mainactivities.profile.ProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.search.SearchFragment;
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         final Fragment MainFeedFragment = new MainFeedFragment();
         final Fragment ShareSongFragment = new ShareSongFragment();
         final Fragment SearchFragment = new SearchFragment();

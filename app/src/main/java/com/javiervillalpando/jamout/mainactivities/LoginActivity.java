@@ -73,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String username, String password){
+        Toast.makeText(LoginActivity.this,"login",Toast.LENGTH_SHORT).show();
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {

@@ -24,6 +24,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -54,5 +58,8 @@ dependencies {
     implementation "androidx.exifinterface:exifinterface:1.0.0"
     implementation 'com.google.android.material:material:<version>'
     implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    implementation project(':spotify-app-remote')
+    implementation "com.google.code.gson:gson:2.8.5"
 
 }

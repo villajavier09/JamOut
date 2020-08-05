@@ -29,6 +29,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.OnSwipeTouchListener;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.SpotifyPlayBack;
 import com.javiervillalpando.jamout.UserRecommendationAlgorithm;
 import com.javiervillalpando.jamout.adapters.FavoriteSongAdapter;
 import com.javiervillalpando.jamout.adapters.SearchAlbumsAdapter;
@@ -568,6 +569,7 @@ public class SearchFragment extends Fragment {
             args.putString("artistname", artistFormat(trackList.get(position).artists));
             args.putString("coverUrl",trackList.get(position).album.images.get(0).url);
             args.putString("Id",trackList.get(position).id);
+            args.putString("uri",trackList.get(position).uri);
             shareResultsDialogFragment.setArguments(args);
         }
         if(type.equals("Album")){
@@ -576,6 +578,7 @@ public class SearchFragment extends Fragment {
             args.putString("artistname",((TextView)recommendedUsersList.findViewHolderForAdapterPosition(position).itemView.findViewById(R.id.artistTitle)).getText().toString());
             args.putString("coverUrl",albumList.get(position).images.get(0).url);
             args.putString("Id",albumList.get(position).id);
+            args.putString("uri",albumList.get(position).uri);
             shareResultsDialogFragment.setArguments(args);
         }
         if(type.equals("Artist")){
@@ -584,6 +587,7 @@ public class SearchFragment extends Fragment {
             args.putString("artistname",(artistList.get(position).genres.get(0)));
             args.putString("coverUrl",artistList.get(position).images.get(0).url);
             args.putString("Id",artistList.get(position).id);
+            args.putString("uri",artistList.get(position).uri);
             shareResultsDialogFragment.setArguments(args);
         }
 

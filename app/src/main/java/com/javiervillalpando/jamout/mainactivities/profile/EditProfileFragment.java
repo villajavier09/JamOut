@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -21,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -50,8 +52,10 @@ public class EditProfileFragment extends Fragment {
     private Button saveChangesButton;
     private Button takePictureButton;
     private Button logoutButton;
+    private Button galleryButton;
     private TextInputLayout editUsername;
     private TextInputLayout editPassword;
+    public final static int PICK_PHOTO_CODE = 1046;
     private ImageView profilePicture;
     private File photoFile;
     private String photoFileName = "photo.jpg";
@@ -73,7 +77,15 @@ public class EditProfileFragment extends Fragment {
         editUsername = view.findViewById(R.id.editUsername);
         editPassword = view.findViewById(R.id.editPassword);
         profilePicture = view.findViewById(R.id.profilePicture);
+        galleryButton = view.findViewById(R.id.galleryButton);
 
+
+        galleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPickPhoto();
+            }
+        });
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +98,7 @@ public class EditProfileFragment extends Fragment {
                 launchCamera();
             }
         });
+
     }
 
     private void launchCamera() {
@@ -120,6 +133,16 @@ public class EditProfileFragment extends Fragment {
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
+        }
+        if(requestCode == PICK_PHOTO_CODE){
+            Uri photoUri = data.getData();
+
+            // Load the image located at photoUri into selectedImage
+            Bitmap selectedImage = loadFromUri(photoUri);
+
+            // Load the selected image into a preview;
+            profilePicture.setImageBitmap(selectedImage);
+            profilePicture.setVisibility(View.VISIBLE);
         }
     }
 
@@ -224,4 +247,37 @@ public class EditProfileFragment extends Fragment {
         bm.recycle();
         return resizedBitmap;
     }
+
+    // Trigger gallery selection for a photo
+    public void onPickPhoto() {
+        // Create intent for picking a photo from the gallery
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+        // So as long as the result is not null, it's safe to use the intent.
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Bring up gallery to select a photo
+            startActivityForResult(intent, PICK_PHOTO_CODE);
+        }
+    }
+
+    public Bitmap loadFromUri(Uri photoUri) {
+        Bitmap image = null;
+        try {
+            // check version of Android on device
+            if(Build.VERSION.SDK_INT > 27){
+                // on newer versions of Android, use the new decodeBitmap method
+                ImageDecoder.Source source = ImageDecoder.createSource(getActivity().getContentResolver(), photoUri);
+                image = ImageDecoder.decodeBitmap(source);
+            } else {
+                // support older versions of Android by using getBitmap
+                image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
 }

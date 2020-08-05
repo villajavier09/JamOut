@@ -18,7 +18,13 @@ import com.parse.SaveCallback;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import com.spotify.android.appremote.api.ConnectionParams;
+import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.SpotifyAppRemote;
 
+import com.spotify.protocol.client.Subscription;
+import com.spotify.protocol.types.PlayerState;
+import com.spotify.protocol.types.Track;
 //Used to authenticate the user with Spotify so that the Spotify network calls will work
 public class SpotifyClientActivity extends AppCompatActivity {
 
@@ -26,6 +32,7 @@ public class SpotifyClientActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private SharedPreferences msharedPreferences;
     private RequestQueue queue;
+    private SpotifyAppRemote mSpotifyAppRemote;
 
     private static final String CLIENT_ID = "47031eb52a5d4042816c26f45cfb1950";
     private static final String REDIRECT_URI = "com.javiervillalpando.jamout://callback";
@@ -74,6 +81,12 @@ public class SpotifyClientActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
     private void updateUserField(String accessToken) {
         ParseUser user = ParseUser.getCurrentUser();
         user.put("spotifyToken",accessToken);
@@ -95,4 +108,51 @@ public class SpotifyClientActivity extends AppCompatActivity {
     public static String getACCESS_TOKEN() {
         return ACCESS_TOKEN;
     }
+
+    ConnectionParams connectionParams =
+            new ConnectionParams.Builder(CLIENT_ID)
+                    .setRedirectUri(REDIRECT_URI)
+                    .showAuthView(true)
+                    .build();
+
+    public void PlayMusic(){
+        SpotifyAppRemote.connect(this, connectionParams,
+                new Connector.ConnectionListener() {
+
+                    @Override
+                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                        mSpotifyAppRemote = spotifyAppRemote;
+                        Log.d("MainActivity", "Connected! Yay!");
+
+                        // Now you can start interacting with App Remote
+                        connected();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Log.e("MainActivity", throwable.getMessage(), throwable);
+
+                        // Something went wrong when attempting to connect! Handle errors here
+                    }
+                });
+    }
+
+    private void connected() {
+        // Play a playlist
+        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
+
+        // Subscribe to PlayerState
+        mSpotifyAppRemote.getPlayerApi()
+                .subscribeToPlayerState()
+                .setEventCallback(new Subscription.EventCallback<PlayerState>() {
+                    @Override
+                    public void onEvent(PlayerState playerState) {
+                        final Track track = playerState.track;
+                        if (track != null) {
+                            Log.d("MainActivity", track.name + " by " + track.artist.name);
+                        }
+                    }
+                });
+    }
+
 }

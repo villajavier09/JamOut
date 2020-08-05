@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:layout_marginStart="8dp"
@@ -42,24 +43,46 @@
         android:layout_marginEnd="4dp"
         android:background="#eeeeee">
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:id="@+id/imageLayout"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/postImage"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_alignParentTop="true" />
+        <ImageView
+            android:id="@+id/playIcon"
+            android:layout_centerInParent="true"
+            android:alpha=".6"
+            android:layout_width="40dp"
+            android:src="@drawable/ic_baseline_play_arrow_24"
+            android:visibility="gone"
+            android:layout_height="40dp" />
+
+            <ImageView
+                android:id="@+id/pauseIcon"
+                android:layout_centerInParent="true"
+                android:alpha=".6"
+                android:src="@drawable/ic_baseline_pause_24"
+                android:layout_width="40dp"
+                android:visibility="gone"
+                android:layout_height="40dp" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/postSongTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/postImage"
+            android:layout_alignTop="@+id/imageLayout"
             android:layout_marginStart="8dp"
             android:layout_marginTop="0dp"
-            android:layout_toEndOf="@+id/postImage"
+            android:layout_toEndOf="@+id/imageLayout"
             android:text="TextView"
             android:textSize="16dp"
             android:textStyle="bold" />
@@ -80,11 +103,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/postArtistName"
-            android:layout_alignBottom="@+id/postImage"
+            android:layout_alignBottom="@+id/imageLayout"
             android:layout_marginStart="0dp"
             android:layout_marginBottom="8dp"
             android:text="TextView"
             android:textSize="14dp" />
+
+
     </RelativeLayout>
 
     <TextView

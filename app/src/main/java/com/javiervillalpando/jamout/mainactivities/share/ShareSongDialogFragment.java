@@ -66,6 +66,7 @@ public class ShareSongDialogFragment extends DialogFragment {
         final String artistname = getArguments().getString("artistname");
         final String songId = getArguments().getString("Id");
         final String coverUrl = getArguments().getString("coverUrl");
+        final String uri = getArguments().getString("uri");
         postDescription = view.findViewById(R.id.postDescription);
         songTitle = view.findViewById(R.id.songTitle);
         artistName = view.findViewById(R.id.artistName);
@@ -81,13 +82,13 @@ public class ShareSongDialogFragment extends DialogFragment {
             public void onClick(View view) {
                 String description = postDescription.getText().toString();
                 if(type.equals("Song")){
-                    shareSong(description,name,artistname,coverUrl,songId);
+                    shareSong(description,name,artistname,coverUrl,songId,uri);
                 }
                 if(type.equals("Album")){
-                    shareAlbum(description,name,artistname,coverUrl,songId);
+                    shareAlbum(description,name,artistname,coverUrl,songId,uri);
                 }
                 if(type.equals("Artist")){
-                    shareArtist(description,name,artistname,coverUrl,songId);
+                    shareArtist(description,name,artistname,coverUrl,songId,uri);
                 }
                 dismiss();
                 Toast.makeText(getActivity(), "Song Shared", Toast.LENGTH_SHORT).show();
@@ -96,17 +97,18 @@ public class ShareSongDialogFragment extends DialogFragment {
 
     }
 
-    private void shareArtist(String description, String name, String artistname, String coverUrl, String songId) {
+    private void shareArtist(String description, String name, String artistname, String coverUrl, String songId, String uri) {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseArtist artist = saveArtist(name,artistname,coverUrl,songId);
-        saveArtistPost(description,currentUser,artist);
+        ParseArtist artist = saveArtist(name,artistname,coverUrl,songId,uri);
+        saveArtistPost(description,currentUser,artist,uri);
     }
 
-    private void saveArtistPost(String description, ParseUser currentUser, ParseArtist artist) {
+    private void saveArtistPost(String description, ParseUser currentUser, ParseArtist artist, String uri) {
         Post post = new Post();
         post.setArtist(artist);
         post.setDescription(description);
         post.setUser(currentUser);
+        post.setUri(uri);
         post.setType("Artist");
         post.saveInBackground(new SaveCallback() {
             @Override
@@ -118,7 +120,7 @@ public class ShareSongDialogFragment extends DialogFragment {
         });
     }
 
-    private ParseArtist saveArtist(String name, String artistname, String coverUrl, String songId) {
+    private ParseArtist saveArtist(String name, String artistname, String coverUrl, String songId, String uri) {
         final ParseArtist artist = new ParseArtist();
         artist.setArtistName(name);
         artist.setArtistGenre(artistname);
@@ -127,17 +129,18 @@ public class ShareSongDialogFragment extends DialogFragment {
         return artist;
     }
 
-    private void shareAlbum(String description, String name, String artistname, String coverUrl, String songId) {
+    private void shareAlbum(String description, String name, String artistname, String coverUrl, String songId, String uri) {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseAlbum album = saveAlbum(name,artistname,coverUrl,songId);
-        saveAlbumPost(description,currentUser,album);
+        ParseAlbum album = saveAlbum(name,artistname,coverUrl,songId,uri);
+        saveAlbumPost(description,currentUser,album,uri);
     }
 
-    private void saveAlbumPost(String description, ParseUser currentUser, ParseAlbum album) {
+    private void saveAlbumPost(String description, ParseUser currentUser, ParseAlbum album, String uri) {
         Post post = new Post();
         post.setAlbum(album);
         post.setDescription(description);
         post.setUser(currentUser);
+        post.setUri(uri);
         post.setType("Album");
 
         post.saveInBackground(new SaveCallback() {
@@ -150,7 +153,7 @@ public class ShareSongDialogFragment extends DialogFragment {
         });
     }
 
-    private ParseAlbum saveAlbum(String name, String artistname, String coverUrl, String songId) {
+    private ParseAlbum saveAlbum(String name, String artistname, String coverUrl, String songId, String uri) {
         final ParseAlbum album = new ParseAlbum();
         album.setAlbumTitle(name);
         album.setImageUrl(coverUrl);
@@ -159,15 +162,16 @@ public class ShareSongDialogFragment extends DialogFragment {
         return album;
     }
 
-    private void shareSong(String description, String name, String artistname, String coverUrl, String songId) {
+    private void shareSong(String description, String name, String artistname, String coverUrl, String songId, String uri) {
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseSong song = saveSong(name,artistname,coverUrl,songId);
-        savePost(description,currentUser,song);
+        savePost(description,currentUser,song,uri);
 
     }
-    private void savePost(String description, ParseUser user, ParseSong song){
+    private void savePost(String description, ParseUser user, ParseSong song, String uri){
         Post post = new Post();
         post.setSong(song);
+        post.setUri(uri);
         post.setDescription(description);
         post.setUser(user);
         post.setType("Song");
