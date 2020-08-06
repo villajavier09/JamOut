@@ -133,6 +133,13 @@ public class ProfileFragment extends Fragment {
                     queryFavoriteAlbums();
                     favoriteAlbumAdapter.notifyDataSetChanged();
                 }
+                if(i == 2){
+                    FavoriteArtistAdapter favoriteArtistAdapter = new FavoriteArtistAdapter(getActivity(),favoriteArtists);
+                    favoritesList.setAdapter(favoriteArtistAdapter);
+                    favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    queryFavoriteArtists();
+                    favoriteArtistAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

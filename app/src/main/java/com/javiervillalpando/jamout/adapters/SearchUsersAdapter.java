@@ -87,6 +87,9 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
             setFollowerButtonText(user);
             ParseFile image = (ParseFile) user.get("profilePicture");
             String imageUrl = "";
+            if(imageUrl.equals("")){
+                searchUserProfilePicture.setImageResource(R.drawable.ic_outline_person_24);
+            }
             if(image != null){
                 imageUrl = image.getUrl();
             }

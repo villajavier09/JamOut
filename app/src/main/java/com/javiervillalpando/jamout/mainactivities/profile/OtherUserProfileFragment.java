@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,9 +23,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
+import com.javiervillalpando.jamout.adapters.FavoriteAlbumAdapter;
+import com.javiervillalpando.jamout.adapters.FavoriteArtistAdapter;
 import com.javiervillalpando.jamout.adapters.FavoriteSongAdapter;
 import com.javiervillalpando.jamout.mainactivities.LoginActivity;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.models.ParseAlbum;
+import com.javiervillalpando.jamout.models.ParseArtist;
 import com.javiervillalpando.jamout.models.ParseSong;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -49,8 +54,10 @@ public class OtherUserProfileFragment extends Fragment {
     private Spinner dropdown;
     private RecyclerView favoritesList;
     protected FavoriteSongAdapter adapter;
-    protected List<ParseSong> favoriteSongs;
     private ParseUser user;
+    protected List<ParseSong> favoriteSongs = new ArrayList<>();
+    protected List<ParseAlbum> favoriteAlbums = new ArrayList<>();
+    protected List<ParseArtist> favoriteArtists = new ArrayList<>();
     private List<ParseUser> followingUsers;
 
     public OtherUserProfileFragment(){
@@ -129,6 +136,32 @@ public class OtherUserProfileFragment extends Fragment {
         favoritesList.setAdapter(adapter);
         favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
         queryFavoriteSongs();
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 0 ){
+                    favoritesList.setAdapter(adapter);
+                }
+                if(i == 1){
+                    FavoriteAlbumAdapter favoriteAlbumAdapter = new FavoriteAlbumAdapter(getActivity(),favoriteAlbums);
+                    favoritesList.setAdapter(favoriteAlbumAdapter);
+                    favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    queryFavoriteAlbums();
+                    favoriteAlbumAdapter.notifyDataSetChanged();
+                }
+                if(i == 2){
+                    FavoriteArtistAdapter favoriteArtistAdapter = new FavoriteArtistAdapter(getActivity(),favoriteArtists);
+                    favoritesList.setAdapter(favoriteArtistAdapter);
+                    favoritesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    queryFavoriteArtists();
+                    favoriteArtistAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
     }
 
     private void loadProfilePicture() {
@@ -167,8 +200,42 @@ public class OtherUserProfileFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
+    private void queryFavoriteAlbums() {
+        favoriteAlbums.clear();
+        ArrayList<ParseAlbum> currentFavorites = (ArrayList<ParseAlbum>) user.get("favoriteAlbums");
+        if(currentFavorites == null){
+            return;
+        }
+        for(int i = 0; i < currentFavorites.size();i++){
+            try {
+                ParseAlbum currentFavorite = (ParseAlbum) currentFavorites.get(i).fetch();
+                favoriteAlbums.add(currentFavorite);
+                Log.d(TAG, "queryFavoriteAlbums: "+favoriteAlbums.toString());
+            }catch(ParseException e){
+                e.printStackTrace();
+            }
+        }
+        //favoriteAlbumAdapter.notifyDataSetChanged();
+    }
 
-    public void setDropDown(){
+    private void queryFavoriteArtists() {
+        favoriteArtists.clear();
+        ArrayList<ParseArtist> currentFavorites = (ArrayList<ParseArtist>) user.get("favoriteArtists");
+        if (currentFavorites == null) {
+            return;
+        }
+        for (int i = 0; i < currentFavorites.size(); i++) {
+            try {
+                ParseArtist currentFavorite = (ParseArtist) currentFavorites.get(i).fetch();
+                favoriteArtists.add(currentFavorite);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+        public void setDropDown(){
         String[] dropdownOptions = new String[]{"Favorite Songs","Favorite Albums","Favorite Artists"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item,dropdownOptions);
         dropdown.setAdapter(adapter);
