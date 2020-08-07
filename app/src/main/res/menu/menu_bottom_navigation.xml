@@ -10,8 +10,8 @@
     <item
         android:id="@+id/shareTab"
         android:enabled="true"
-        android:icon="@drawable/share_icon"
-        android:title="Share Song"
+        android:icon="@drawable/ic_baseline_library_music_24"
+        android:title="Recommended"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/searchTab"

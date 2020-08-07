@@ -45,7 +45,9 @@
     <Button
         android:id="@+id/favoriteArtistButton"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:background="@drawable/round_shape_button"
+        android:textColor="@color/colorPrimary"
+        android:layout_height="40dp"
         android:layout_below="@+id/genreName"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="44dp"
@@ -57,7 +59,9 @@
     <Button
         android:id="@+id/shareArtistButton"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:background="@drawable/round_shape_button"
+        android:textColor="@color/colorPrimary"
+        android:layout_height="40dp"
         android:layout_below="@+id/favoriteArtistButton"
         android:layout_alignStart="@+id/favoriteArtistButton"
         android:layout_alignEnd="@+id/favoriteArtistButton"

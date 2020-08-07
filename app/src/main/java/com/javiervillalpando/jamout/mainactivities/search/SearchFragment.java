@@ -208,7 +208,6 @@ public class SearchFragment extends Fragment {
         artistList = new ArrayList<Artist>();
         linearLayout = view.findViewById(R.id.linearLayout);
         progressBar = view.findViewById(R.id.progressbar);
-        recommendedUsersList.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         //loadRecommendedUsers();
        new Thread(new Runnable() {
@@ -347,7 +346,6 @@ public class SearchFragment extends Fragment {
     }
 
     private void loadRecommendedUsers() {
-        recommendedUsersList.setVisibility(View.VISIBLE);
         SearchUsersAdapter.OnFollowClickListener onFollowClickListener = new SearchUsersAdapter.OnFollowClickListener() {
             @Override
             public void OnFollowClicked(int position) {

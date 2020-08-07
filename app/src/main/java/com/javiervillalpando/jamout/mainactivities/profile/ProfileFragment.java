@@ -196,7 +196,6 @@ public class ProfileFragment extends Fragment {
     private void queryFavoriteAlbums() {
         favoriteAlbums.clear();
         ArrayList<ParseAlbum> currentFavorites = (ArrayList<ParseAlbum>) ParseUser.getCurrentUser().get("favoriteAlbums");
-        Log.d(TAG, "queryFavoriteAlbums: "+ currentFavorites.toString());
         if(currentFavorites == null){
             return;
         }

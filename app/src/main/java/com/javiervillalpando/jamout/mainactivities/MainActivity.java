@@ -5,26 +5,20 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.javiervillalpando.jamout.OnSwipeTouchListener;
 import com.javiervillalpando.jamout.R;
-import com.javiervillalpando.jamout.SpotifyPlayBack;
 import com.javiervillalpando.jamout.mainactivities.mainfeed.MainFeedFragment;
 import com.javiervillalpando.jamout.mainactivities.profile.ProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.search.SearchFragment;
-import com.javiervillalpando.jamout.mainactivities.share.ShareSongFragment;
+import com.javiervillalpando.jamout.mainactivities.share.SuggestSongFragment;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Lifecycle;
 
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
@@ -40,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final Fragment MainFeedFragment = new MainFeedFragment();
-        final Fragment ShareSongFragment = new ShareSongFragment();
+        final Fragment ShareSongFragment = new SuggestSongFragment();
         final Fragment SearchFragment = new SearchFragment();
         final Fragment ProfileFragment = new ProfileFragment();
         frameLayout = findViewById(R.id.frameContainer);

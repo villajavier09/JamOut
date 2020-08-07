@@ -37,10 +37,17 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.javiervillalpando.jamout.R;
+import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
@@ -53,11 +60,14 @@ public class EditProfileFragment extends Fragment {
     private Button takePictureButton;
     private Button logoutButton;
     private Button galleryButton;
+    private ParseFile file;
+    private Bitmap takenImage;
     private TextInputLayout editUsername;
     private TextInputLayout editPassword;
     public final static int PICK_PHOTO_CODE = 1046;
     private ImageView profilePicture;
     private File photoFile;
+
     private String photoFileName = "photo.jpg";
 
     public EditProfileFragment(){
@@ -124,16 +134,19 @@ public class EditProfileFragment extends Fragment {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
-                //Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                Bitmap takenImage = rotateBitmapOrientation(photoFile.getAbsolutePath());
+                //Bitmap takennImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                takenImage = rotateBitmapOrientation(photoFile.getAbsolutePath());
+
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
                 profilePicture.setImageBitmap(takenImage);
                 profilePicture.setVisibility(View.VISIBLE);
+                file = new ParseFile(convertToFile(takenImage));
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
+
         if(requestCode == PICK_PHOTO_CODE){
             Uri photoUri = data.getData();
 
@@ -200,12 +213,34 @@ public class EditProfileFragment extends Fragment {
         if (!editPassword.getEditText().getText().toString().matches("") && editPassword.getEditText().getText().toString() != null) {
             currentUser.setPassword(editPassword.getEditText().getText().toString());
         }
-        if(photoFile != null){
-            currentUser.put("profilePicture",new ParseFile(photoFile));
+        if(takenImage != null){
+            ParseFile parsefile = new ParseFile(photoFile);
+            parsefile.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e != null){
+                        e.printStackTrace();
+                    }
+                    else{
+                        currentUser.put("profilePicture",parsefile);
+                        currentUser.saveInBackground();
+                        ProfileFragment fragment = new ProfileFragment();
+                        fragmentManager.beginTransaction().add(R.id.frameContainer,fragment).commit();
+                    }
+
+
+                }
+            });
+
         }
-        currentUser.saveInBackground();
+
+
+        //currentUser.put("profilePicture",new ParseFile(convertToFile(takenImage)));
+       // currentUser.put("profilePicture",new ParseFile(photoFile));
+        currentUser.saveEventually();
         ProfileFragment fragment = new ProfileFragment();
         fragmentManager.beginTransaction().add(R.id.frameContainer,fragment).commit();
+
 
     }
     public Bitmap getCroppedBitmap(Bitmap bitmap) {
@@ -279,5 +314,18 @@ public class EditProfileFragment extends Fragment {
         }
         return image;
     }
+
+    public byte[] convertToFile(Bitmap bitmap){
+       //Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(),
+         //       R.drawable.androidbegin);
+        // Convert it to byte
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress image to lower quality scale 1 - 100
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] image = stream.toByteArray();
+
+      return image;
+    }
+
 
 }

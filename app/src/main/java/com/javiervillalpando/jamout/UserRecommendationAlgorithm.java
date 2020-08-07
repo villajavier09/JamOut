@@ -45,6 +45,9 @@ public class UserRecommendationAlgorithm {
         sortedUsers.clear();
         ParseUser currentUser = ParseUser.getCurrentUser();
         currentUserFavoriteSongs = (ArrayList<ParseSong>) currentUser.get("favoriteSongs");
+        if(currentUserFavoriteSongs == null){
+            return new ArrayList<>();
+        }
         //currentUserFavoriteAlbums = (ArrayList<ParseAlbum>) currentUser.get("favoriteAlbums");
         //currentUserFavoriteArtists = (ArrayList<ParseArtist>) currentUser.get("favoriteArtists");
         currentUserFavoriteGenres = getUserFavoriteGenres(currentUser);
@@ -65,7 +68,6 @@ public class UserRecommendationAlgorithm {
             //float favoriteArtistScore = compareFavoriteArtists(userFavoriteArtists);
             //matchingScore = ((float)(favoriteAlbumScore+favoriteArtistScore+favoriteSongScore)/3);
             matchingScore = ((float)compareFavoriteSongs(userFavoriteSongs)+((float)compareFavoriteGenres(userFavoriteGenre)))/2;
-            Log.d("ALgo", "Username "+possibleUsers.get(i).getUsername()+" Matching Score:" +matchingScore);
             //nonSortedMap.put(matchingScore,possibleUsers.get(i));
             sortUser.put(matchingScore,possibleUsers.get(i));
         }
@@ -97,14 +99,17 @@ public class UserRecommendationAlgorithm {
     private static List<String> getUserFavoriteGenres(ParseUser parseUser){
         ArrayList<ParseSong> currentFavorites = (ArrayList<ParseSong>) parseUser.get("favoriteSongs");
         ArrayList<String> currentFavoriteGenres = new ArrayList<>();
-        for(ParseSong song : currentFavorites){
-            try {
-                song.fetch();
-            } catch (ParseException e) {
-                e.printStackTrace();
+        if(currentFavorites != null){
+            for(ParseSong song : currentFavorites){
+                try {
+                    song.fetch();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                currentFavoriteGenres.add(song.getArtist());
             }
-            currentFavoriteGenres.add(song.getArtist());
         }
+
         return currentFavoriteGenres;
     }
 
@@ -136,9 +141,12 @@ public class UserRecommendationAlgorithm {
     }
 
     public static float compareFavoriteSongs(List<ParseSong> userFavoriteSongs){
-        List<ParseSong> common = new ArrayList<>(userFavoriteSongs);
-        common.retainAll(currentUserFavoriteSongs);
-        return((((float)(2*common.size())/(userFavoriteSongs.size()+currentUserFavoriteSongs.size())))*100);
+        if(userFavoriteSongs != null){
+            List<ParseSong> common = new ArrayList<>(userFavoriteSongs);
+            common.retainAll(currentUserFavoriteSongs);
+            return((((float)(2*common.size())/(userFavoriteSongs.size()+currentUserFavoriteSongs.size())))*100);
+        }
+        return 0;
     }
 
     public static float compareFavoriteGenres(List<String> userFavoriteGenres){

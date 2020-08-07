@@ -68,7 +68,7 @@ public class MainFeedFragment extends Fragment {
                 SpotifyPlayBack.resumeMusic(getContext());
             }
         };
-        relativeLayout = view.findViewById(R.id.relativeLayout);
+        //relativeLayout = view.findViewById(R.id.relativeLayout);
         allPosts = new ArrayList<>();
         adapter= new PostsAdapter(getContext(), allPosts, onCoverClickListener);
         mainFeed.setAdapter(adapter);

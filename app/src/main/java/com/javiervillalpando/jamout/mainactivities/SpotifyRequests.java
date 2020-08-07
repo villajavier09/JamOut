@@ -9,6 +9,8 @@ import com.javiervillalpando.jamout.adapters.SearchArtistsAdapter;
 import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -16,6 +18,7 @@ import kaaes.spotify.webapi.android.models.Album;
 import kaaes.spotify.webapi.android.models.Albums;
 import kaaes.spotify.webapi.android.models.AlbumsPager;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import kaaes.spotify.webapi.android.models.Recommendations;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.TracksPager;
 import retrofit.Callback;
@@ -52,5 +55,13 @@ public class SpotifyRequests extends AppCompatActivity {
         api.setAccessToken(ACCESS_TOKEN);
         SpotifyService service = api.getService();
         service.getAlbum(searchQuery,callback);
+    }
+    public static void getRecommendations(Map<String, Object> map, Callback<Recommendations> callback){
+        SpotifyApi api = new SpotifyApi();
+        String ACCESS_TOKEN = SpotifyClientActivity.getACCESS_TOKEN();
+        api.setAccessToken(ACCESS_TOKEN);
+        SpotifyService service = api.getService();
+        service.getRecommendations(map, callback);
+
     }
 }
