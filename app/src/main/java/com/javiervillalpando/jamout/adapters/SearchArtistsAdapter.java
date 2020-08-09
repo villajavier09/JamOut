@@ -35,6 +35,7 @@ public class SearchArtistsAdapter extends RecyclerView.Adapter<SearchArtistsAdap
     Context context;
     SearchArtistsAdapter.OnShareClickListener onShareClickListener;
     SearchArtistsAdapter.OnFavoriteClickListener onFavoriteClickListener;
+    SearchArtistsAdapter.OnArtistClickListener onArtistClickListener;
 
     public  interface OnShareClickListener {
         void OnShareClicked(int position);
@@ -42,12 +43,16 @@ public class SearchArtistsAdapter extends RecyclerView.Adapter<SearchArtistsAdap
     public interface OnFavoriteClickListener{
         void OnFavoriteClicked(int position);
     }
+    public interface OnArtistClickListener{
+        void OnArtistClicked(int position);
+    }
 
-    public SearchArtistsAdapter(Context context, List<Artist> artists, SearchArtistsAdapter.OnShareClickListener onShareClickListener, SearchArtistsAdapter.OnFavoriteClickListener onFavoriteClickListener){
+    public SearchArtistsAdapter(Context context, List<Artist> artists, SearchArtistsAdapter.OnShareClickListener onShareClickListener, SearchArtistsAdapter.OnFavoriteClickListener onFavoriteClickListener, SearchArtistsAdapter.OnArtistClickListener onArtistClickListener){
         this.artists = artists;
         this.context = context;
         this.onFavoriteClickListener = onFavoriteClickListener;
         this.onShareClickListener = onShareClickListener;
+        this.onArtistClickListener = onArtistClickListener;
     }
     @NonNull
     @Override
@@ -104,6 +109,12 @@ public class SearchArtistsAdapter extends RecyclerView.Adapter<SearchArtistsAdap
                 @Override
                 public void onClick(View view) {
                     onShareClickListener.OnShareClicked(getAdapterPosition());
+                }
+            });
+            artistPicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onArtistClickListener.OnArtistClicked(getAdapterPosition());
                 }
             });
         }

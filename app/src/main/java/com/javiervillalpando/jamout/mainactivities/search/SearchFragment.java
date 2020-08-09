@@ -36,6 +36,7 @@ import com.javiervillalpando.jamout.adapters.SearchAlbumsAdapter;
 import com.javiervillalpando.jamout.adapters.SearchArtistsAdapter;
 import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
 import com.javiervillalpando.jamout.adapters.SearchUsersAdapter;
+import com.javiervillalpando.jamout.mainactivities.SpotifyClientActivity;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
 import com.javiervillalpando.jamout.mainactivities.profile.EditProfileFragment;
 import com.javiervillalpando.jamout.mainactivities.profile.OtherUserProfileFragment;
@@ -252,7 +253,13 @@ public class SearchFragment extends Fragment {
                 favoriteArtist(position);
             }
         };
-        final SearchArtistsAdapter searchArtistsAdapter = new SearchArtistsAdapter(getActivity(),artistList,onShareClickListener,onFavoriteClickListener);
+        SearchArtistsAdapter.OnArtistClickListener onArtistClickListener = new SearchArtistsAdapter.OnArtistClickListener() {
+            @Override
+            public void OnArtistClicked(int position) {
+                SpotifyPlayBack.PlayMusic(getContext(),artistList.get(position).uri);
+            }
+        };
+        final SearchArtistsAdapter searchArtistsAdapter = new SearchArtistsAdapter(getActivity(),artistList,onShareClickListener,onFavoriteClickListener, onArtistClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchArtistsAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
@@ -289,7 +296,13 @@ public class SearchFragment extends Fragment {
                 favoriteAlbum(position);
             }
         };
-        final SearchAlbumsAdapter searchAlbumsAdapter = new SearchAlbumsAdapter(getActivity(),albumList,onShareClickListener,onFavoriteClickListener);
+        SearchAlbumsAdapter.OnAlbumClickListener onAlbumClickListener = new SearchAlbumsAdapter.OnAlbumClickListener() {
+            @Override
+            public void OnAlbumClicked(int position) {
+                SpotifyPlayBack.PlayMusic(getContext(),albumList.get(position).uri);
+            }
+        };
+        final SearchAlbumsAdapter searchAlbumsAdapter = new SearchAlbumsAdapter(getActivity(),albumList,onShareClickListener,onFavoriteClickListener, onAlbumClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchAlbumsAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);
@@ -459,8 +472,14 @@ public class SearchFragment extends Fragment {
                 favoriteSong(position);
             }
         };
+        SearchSongAdapter.OnAlbumClickListener onAlbumClickListener = new SearchSongAdapter.OnAlbumClickListener() {
+            @Override
+            public void onAlbumClicked(int position) {
+                SpotifyPlayBack.PlayMusic(getContext(),trackList.get(position).uri);
+            }
+        };
 
-        searchSongAdapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener, onDoubleClickListener);
+        searchSongAdapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener, onDoubleClickListener, onAlbumClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedUsersList.setAdapter(searchSongAdapter);
         recommendedUsersList.setLayoutManager(linearLayoutManager);

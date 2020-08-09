@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.base.Joiner;
 import com.javiervillalpando.jamout.R;
+import com.javiervillalpando.jamout.SpotifyPlayBack;
 import com.javiervillalpando.jamout.adapters.SearchSongAdapter;
 import com.javiervillalpando.jamout.mainactivities.SpotifyClientActivity;
 import com.javiervillalpando.jamout.mainactivities.SpotifyRequests;
@@ -107,8 +108,14 @@ public class SuggestSongFragment extends Fragment {
                 favoriteSong(position);
             }
         };
+        SearchSongAdapter.OnAlbumClickListener onAlbumClickListener = new SearchSongAdapter.OnAlbumClickListener() {
+            @Override
+            public void onAlbumClicked(int position) {
+                SpotifyPlayBack.PlayMusic(getContext(),trackList.get(position).uri);
+            }
+        };
 
-        SearchSongAdapter searchSongAdapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener, onDoubleClickListener);
+        SearchSongAdapter searchSongAdapter = new SearchSongAdapter(getActivity(),trackList, onShareClickListener,onFavoriteClickListener, onDoubleClickListener,onAlbumClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recommendedSongsList.setAdapter(searchSongAdapter);
         recommendedSongsList.setLayoutManager(linearLayoutManager);

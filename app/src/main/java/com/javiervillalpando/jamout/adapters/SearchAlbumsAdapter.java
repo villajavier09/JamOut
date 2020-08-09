@@ -35,6 +35,7 @@ public class SearchAlbumsAdapter extends RecyclerView.Adapter<SearchAlbumsAdapte
     Context context;
     SearchAlbumsAdapter.OnShareClickListener onShareClickListener;
     SearchAlbumsAdapter.OnFavoriteClickListener onFavoriteClickListener;
+    SearchAlbumsAdapter.OnAlbumClickListener onAlbumClickListener;
 
     public  interface OnShareClickListener {
         void OnShareClicked(int position);
@@ -42,12 +43,16 @@ public class SearchAlbumsAdapter extends RecyclerView.Adapter<SearchAlbumsAdapte
     public interface OnFavoriteClickListener{
         void OnFavoriteClicked(int position);
     }
+    public interface  OnAlbumClickListener{
+        void OnAlbumClicked(int position);
+    }
 
-    public SearchAlbumsAdapter(Context context, List<AlbumSimple> albums, SearchAlbumsAdapter.OnShareClickListener onShareClickListener, SearchAlbumsAdapter.OnFavoriteClickListener onFavoriteClickListener){
+    public SearchAlbumsAdapter(Context context, List<AlbumSimple> albums, SearchAlbumsAdapter.OnShareClickListener onShareClickListener, SearchAlbumsAdapter.OnFavoriteClickListener onFavoriteClickListener, SearchAlbumsAdapter.OnAlbumClickListener onAlbumClickListener){
         this.albums = albums;
         this.context = context;
         this.onFavoriteClickListener = onFavoriteClickListener;
         this.onShareClickListener = onShareClickListener;
+        this.onAlbumClickListener = onAlbumClickListener;
 
     }
     @NonNull
@@ -119,6 +124,12 @@ public class SearchAlbumsAdapter extends RecyclerView.Adapter<SearchAlbumsAdapte
                 @Override
                 public void onClick(View view) {
                     onFavoriteClickListener.OnFavoriteClicked(getAdapterPosition());
+                }
+            });
+            albumCover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onAlbumClickListener.OnAlbumClicked(getAdapterPosition());
                 }
             });
         }

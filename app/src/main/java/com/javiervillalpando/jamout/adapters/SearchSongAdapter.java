@@ -39,18 +39,23 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
     public interface  OnDoubleClickListener{
         void OnDoubleClicked(int position);
     }
+    public interface OnAlbumClickListener{
+        void onAlbumClicked(int position);
+    }
 
     ArrayList<Track> trackList = new ArrayList<Track>();
     OnShareClickListener onShareClickListener;
     OnFavoriteClickListener onFavoriteClickListener;
     OnDoubleClickListener onDoubleClickList;
+    OnAlbumClickListener onAlbumClickListener;
 
-    public SearchSongAdapter(Context context, ArrayList<Track> tracks, OnShareClickListener onShareClickListener, OnFavoriteClickListener onFavoriteClickListener, OnDoubleClickListener onDoubleClickListener){
+    public SearchSongAdapter(Context context, ArrayList<Track> tracks, OnShareClickListener onShareClickListener, OnFavoriteClickListener onFavoriteClickListener, OnDoubleClickListener onDoubleClickListener, OnAlbumClickListener onAlbumClickListener){
         trackList = tracks;
         this.context = context;
         this.onShareClickListener = onShareClickListener;
         this.onFavoriteClickListener = onFavoriteClickListener;
         this.onDoubleClickList = onDoubleClickListener;
+        this.onAlbumClickListener = onAlbumClickListener;
     }
     @NonNull
     @Override
@@ -116,6 +121,12 @@ public class SearchSongAdapter extends RecyclerView.Adapter<SearchSongAdapter.Vi
                     super.onDoubleTap(e);
                     onDoubleClickList.OnDoubleClicked(getAdapterPosition());
 
+                }
+            });
+            albumCover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onAlbumClickListener.onAlbumClicked(getAdapterPosition());
                 }
             });
 
