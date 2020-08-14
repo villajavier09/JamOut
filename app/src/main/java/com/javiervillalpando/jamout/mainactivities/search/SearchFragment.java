@@ -214,11 +214,14 @@ public class SearchFragment extends Fragment {
        new Thread(new Runnable() {
             @Override
             public void run() {
-               loadRecommendedUsers();
+                loadRecommendedUsers();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                        recommendedUsersList.setAdapter(searchUsersAdapter);
+                        recommendedUsersList.setLayoutManager(linearLayoutManager);
                         searchUsersAdapter.notifyDataSetChanged();
                     }
                 });
@@ -381,9 +384,7 @@ public class SearchFragment extends Fragment {
             }
         };
         searchUsersAdapter= new SearchUsersAdapter(getActivity(),userList,onFollowClickListener,onUnfollowClickListener, onUserClickListener);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        recommendedUsersList.setAdapter(searchUsersAdapter);
-        recommendedUsersList.setLayoutManager(linearLayoutManager);
+        userList.clear();
         userList.addAll((ArrayList<ParseUser>)UserRecommendationAlgorithm.recommendUsers());
 
 
